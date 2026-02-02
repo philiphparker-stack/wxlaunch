@@ -1,0 +1,40 @@
+severe weather links: 
+
+https://www.weather.gov/wwamap/png/US.png
+
+https://www.spc.noaa.gov/products/outlook/day1otlk_2000.gif
+
+https://www.spc.noaa.gov/products/watch/validww.png
+
+
+
+
+
+
+models
+
+https://charts.ecmwf.int/?facets=%7B%22Range%22%3A%5B%22Medium%20%2815%20days%29%22%5D%7D
+
+
+
+
+
+Tropical Weather Modeling: 
+
+https://moe.met.fsu.edu/tcgengifs/
+
+
+
+Satellite Links: 
+
+https://weather.cod.edu/satrad/
+https://www.star.nesdis.noaa.gov/goes/conus.php?sat=G19
+
+
+SOunding Resources: 
+
+https://weather.cod.edu/buildmap/analysis/raob_build.php
+https://www.meteo.psu.edu/bufkit/SEUS_NAMNEST_06.html
+
+
+
