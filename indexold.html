@@ -369,7 +369,7 @@
       <div class="tile-header">Click a station</div>
       <div id="soundingMap"></div>
       <div class="sounding-meta" id="soundingMeta"></div>
-      <div class="tiny-note">Source: SPC Experimental Soundings (OBS). If the newest cycle isn’t posted yet, it auto-falls back.</div>
+      <div class="tiny-note">Source: SPC Experimental Soundings (OBS). If the newest cycle isnÂ’t posted yet, it auto-falls back.</div>
     </div>
 
     <div>
@@ -377,7 +377,7 @@
       <div id="soundingViewer">
         <div id="viewerStage">
           <img id="soundingImg" alt="Sounding will load here">
-          <div class="sounding-overlay" id="soundingOverlay">Loading…</div>
+          <div class="sounding-overlay" id="soundingOverlay">LoadingÂ…</div>
         </div>
 
         <div class="viewer-controls" aria-label="Viewer controls">
@@ -599,7 +599,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const meta = document.getElementById("soundingMeta");
     if (!img || !meta) return;
 
-    // ? reset viewer every time (fixes “super zoomed in” on next click)
+    // ? reset viewer every time (fixes Â“super zoomed inÂ” on next click)
     resetViewer();
 
     const base = guessLatestSynopticUTC();
@@ -610,14 +610,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let i = 0;
     showOverlay(true);
-    meta.textContent = `${station.id} — ${fmtUTC(tries[0].dt)} (trying…)`;
+    meta.textContent = `${station.id} Â— ${fmtUTC(tries[0].dt)} (tryingÂ…)`;
 
     img.onload = null;
     img.onerror = null;
 
     const tryLoad = () => {
       const t = tries[i];
-      meta.textContent = `${station.id} — ${fmtUTC(t.dt)}${i ? " (fallback)" : ""}`;
+      meta.textContent = `${station.id} Â— ${fmtUTC(t.dt)}${i ? " (fallback)" : ""}`;
 
       img.onload = () => showOverlay(false);
       img.onerror = () => {
@@ -625,7 +625,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (i < tries.length) tryLoad();
         else {
           showOverlay(false);
-          meta.textContent = `${station.id} — could not load latest SPC OBS image (try again later).`;
+          meta.textContent = `${station.id} Â— could not load latest SPC OBS image (try again later).`;
           img.removeAttribute("src");
         }
       };
@@ -644,7 +644,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 10,
-      attribution: "© OpenStreetMap"
+      attribution: "Â© OpenStreetMap"
     }).addTo(map);
 
     loadSpcStationsFromStationsTxt()
