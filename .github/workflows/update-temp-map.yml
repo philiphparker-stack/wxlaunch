@@ -5,6 +5,10 @@ on:
     - cron: "*/15 * * * *"  # every 15 minutes
   workflow_dispatch:
 
+# ✅ THIS is the key for exit code 128 (allow push)
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,6 +16,8 @@ jobs:
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true
 
       - name: Show files (debug)
         run: |
@@ -43,8 +49,8 @@ jobs:
 
       - name: Commit and push changes
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add maps/latest_temp.png
-          git commit -m "Auto-update temperature map" || echo "No changes"
+          git commit -m "Auto-update temperature map" || echo "No changes to commit"
           git push
