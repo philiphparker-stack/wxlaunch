@@ -1,44 +1,9 @@
-name: Update Temperature Map
+- name: Debug file structure
+  run: |
+    pwd
+    ls -la
+    ls -la maps || echo "maps folder missing"
 
-on:
-  schedule:
-    - cron: "*/15 * * * *"
-  workflow_dispatch:
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check out repo
-        uses: actions/checkout@v4
-
-      - name: Install system dependencies for Cartopy
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libgeos-dev \
-            libproj-dev \
-            proj-data \
-            proj-bin
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install Python dependencies
-        run: |
-          pip install numpy requests matplotlib cartopy
-
-      - name: Run temperature map script
-        run: |
-          python make_temp_map_nws.py
-
-      - name: Commit and push changes
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add maps/latest_temp.png
-          git commit -m "Auto-update temperature map" || echo "No changes"
-          git push
+- name: Run temperature map script
+  run: |
+    python make_temp_map_nws.py
