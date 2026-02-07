@@ -87,16 +87,18 @@
   aspect-ratio: 3.5 / 2;
 }
 
-  .tile-content.temp-map {
-  padding: 6px;
-  background: #f4f6fa;
+  .tile-content.temp-map{
+  padding: 0;                 /* remove inner white frame */
+  background: #0b1f3a;        /* match site, not white */
 }
 
-.tile-content.temp-map img {
+.tile-content.temp-map img{
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: contain;        /* no cropping */
+  display: block;
 }
+
 
   .tile.clickable { cursor: pointer; }
   .tile.clickable:hover {
@@ -338,9 +340,9 @@
 
     <div class="tile">
       <div class="tile-header">Current Temps</div>
-      <div class="tile-content">
-        <img src="./maps/latest_temp.png?v=9" alt="Current Temperatures">
-      </div>
+      <div class="tile-content temp-map">
+  <img src="./maps/latest_temp.png?v=10" alt="Current Temperatures">
+</div>
     </div>
 
     <div class="tile">
