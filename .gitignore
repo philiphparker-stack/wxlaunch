@@ -1,0 +1,9 @@
+# --- generated data / state ---
+maps/*.grib2
+maps/_*.json
+maps/latest_*.png
+
+# optional: keep only code, not local caches
+__pycache__/
+*.pyc
+.DS_Store
