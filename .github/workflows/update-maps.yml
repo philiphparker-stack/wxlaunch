@@ -24,6 +24,7 @@ jobs:
           environment-file: environment.yml
           channels: conda-forge
           channel-priority: strict
+          condo-remove-defaults: true
 
       - name: Run map scripts
         shell: bash -l {0}
