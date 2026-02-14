@@ -16,7 +16,6 @@
       --line:rgba(255,255,255,.10);
       --accent:#6aa7ff;
       --good:#63ffcf;
-      --danger:#ff6a6a;
     }
     *{box-sizing:border-box}
     body{
@@ -73,9 +72,7 @@
     }
     nav a:hover{color:var(--text)}
 
-    main{
-      height: calc(100vh - 56px);
-    }
+    main{ height: calc(100vh - 56px); }
     .panel{
       height:100%;
       display:flex;
@@ -108,9 +105,7 @@
       font-size:16px;
       letter-spacing:.2px;
     }
-    .sub{
-      font-size:13px;color:var(--muted);margin:6px 0 0;
-    }
+    .sub{ font-size:13px;color:var(--muted);margin:6px 0 0; }
     .pill{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.05);
@@ -122,7 +117,7 @@
     }
 
     .viewerArea{
-      padding:10px 14px;
+      padding:10px 14px 14px;
       background: rgba(0,0,0,.06);
       flex: 1 1 auto;
       min-height:0;
@@ -131,44 +126,36 @@
       gap:10px;
     }
 
+    /* ===== TOP CONTROLS (buttons + zoom) ===== */
     .topControls{
       display:flex;
-      align-items:flex-start;
+      align-items:center;
       justify-content:space-between;
-      gap:10px;
+      gap:12px;
       flex-wrap:wrap;
     }
     .leftControls{
       display:flex;
-      flex-direction:column;
-      gap:8px;
-      min-width: min(680px, 100%);
-    }
-
-    .controlsLabel{
-      font-weight:950;
-      color:var(--muted);
-      font-size:12px;
-      letter-spacing:.2px;
-      display:flex;
       align-items:center;
       gap:10px;
       flex-wrap:wrap;
+      min-width:0;
     }
-    .hint{
-      font-weight:800;
-      color: rgba(255,255,255,.75);
-      font-size:12px;
-      letter-spacing:.2px;
+    .label{
+      font-weight:950;
+      color:var(--muted);
+      white-space:nowrap;
     }
 
-    .varPills{
+    /* Pill variable buttons */
+    .pillRow{
       display:flex;
-      flex-wrap:wrap;
       gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      min-width:0;
     }
-
-    .varBtn{
+    .chip{
       border-radius:999px;
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.06);
@@ -176,32 +163,33 @@
       padding:8px 12px;
       font-weight:950;
       cursor:pointer;
-      outline:none;
       user-select:none;
+      line-height:1;
       display:inline-flex;
       align-items:center;
       gap:8px;
     }
-    .varBtn:hover{border-color: rgba(106,167,255,.35)}
-    .varBtn[aria-pressed="true"]{
-      border-color: rgba(106,167,255,.55);
+    .chip:hover{ border-color: rgba(106,167,255,.35); }
+    .chip[aria-pressed="true"]{
       background: rgba(106,167,255,.18);
+      border-color: rgba(106,167,255,.42);
+      box-shadow: 0 10px 22px rgba(0,0,0,.22);
     }
-    .slotDot{
-      width:10px;height:10px;border-radius:999px;
-      border:1px solid rgba(255,255,255,.35);
-      opacity:.9;
+    .chip .dot{
+      width:8px;height:8px;border-radius:999px;
+      background: rgba(255,255,255,.35);
+      flex:0 0 auto;
     }
-    .slotDot.a{ background: rgba(99,255,207,.35); border-color: rgba(99,255,207,.55); }
-    .slotDot.b{ background: rgba(106,167,255,.35); border-color: rgba(106,167,255,.55); }
+    .chip[aria-pressed="true"] .dot{
+      background: rgba(99,255,207,.90);
+    }
 
     .zoomControls{
       display:flex;align-items:center;gap:8px;flex-wrap:wrap;
       color: var(--muted);
-      font-weight:800;
+      font-weight:850;
       font-size:12px;
       justify-content:flex-end;
-      margin-left:auto;
     }
 
     button{
@@ -215,144 +203,14 @@
       outline:none;
     }
     button:hover{border-color: rgba(106,167,255,.35)}
-    button:disabled{
-      opacity:.55;
-      cursor:not-allowed;
-    }
+    button:disabled{ opacity:.55; cursor:not-allowed; }
 
-    /* ===== Forecast viewer layout ===== */
-    #viewerShell{
-      width: 100%;
-      height: clamp(520px, calc(100vh - 234px), 820px);
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.20);
-      background: #ffffff;
-      overflow: hidden;
-      position: relative;
-      flex: 1 1 auto;
-      min-height: 0;
-    }
-
-    .viewerGrid{
-      position:absolute;
-      inset:0;
-      display:flex;
-      width:100%;
-      height:100%;
-      background:#ffffff;
-    }
-    .viewerGrid.single .pane.b{ display:none; }
-    .viewerGrid.single .pane.a{ width:100%; }
-    .viewerGrid.compare .pane{ width:50%; }
-    .pane{
-      position:relative;
-      overflow:hidden;
-      border-right: 1px solid rgba(0,0,0,.08);
-    }
-    .pane:last-child{ border-right: none; }
-
-    .paneHead{
-      position:absolute;
-      top:10px;left:10px;right:10px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      pointer-events:none;
-      z-index:6;
-    }
-    .paneTag{
-      pointer-events:none;
-      font-weight:950;
-      font-size:12px;
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(0,0,0,.12);
-      background: rgba(255,255,255,.85);
-      color: rgba(0,0,0,.82);
-      box-shadow: 0 10px 22px rgba(0,0,0,.12);
-      white-space:nowrap;
-      max-width: 65%;
-      overflow:hidden;
-      text-overflow: ellipsis;
-    }
-    .paneValid{
-      pointer-events:none;
-      font-weight:950;
-      font-size:12px;
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(0,0,0,.12);
-      background: rgba(255,255,255,.85);
-      color: rgba(0,0,0,.82);
-      box-shadow: 0 10px 22px rgba(0,0,0,.12);
-      white-space:nowrap;
-    }
-
-    .viewerStage{
-      position:absolute;
-      inset:0;
-      overflow:hidden;
-      background:#ffffff;
-      cursor: grab;
-    }
-    .viewerStage.dragging{ cursor: grabbing; }
-
-    .forecastImg{
-      width:100%;
-      height:100%;
-      object-fit: contain;
-      display:block;
-      transform-origin: 0 0;
-      will-change: transform;
-      user-select:none;
-      -webkit-user-drag:none;
-      pointer-events:none;
-    }
-
-    .overlay{
-      position:absolute;
-      inset:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight: 950;
-      color: rgba(255,255,255,0.95);
-      background: rgba(0,0,0,0.26);
-      backdrop-filter: blur(2px);
-      -webkit-backdrop-filter: blur(2px);
-      opacity:0;
-      pointer-events:none;
-      transition: opacity 0.15s ease;
-      z-index:7;
-      text-align:center;
-      padding:16px;
-    }
-    .overlay.show{ opacity:1; }
-
-    .noData{
-      background: rgba(0,0,0,0.34);
-    }
-    .noData .msg{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      align-items:center;
-      justify-content:center;
-    }
-    .noData .msg .tiny{
-      font-size:12px;
-      font-weight:800;
-      color: rgba(255,255,255,.85);
-      max-width: 420px;
-      line-height:1.35;
-    }
-
-    /* Bottom controls (arrows + slider) */
-    .controls{
+    /* ===== SLIDER ROW MOVED TO TOP ===== */
+    .controlsTop{
       display:flex;align-items:center;justify-content:space-between;gap:10px;
-      padding:10px 14px 12px;
-      border-top:1px solid var(--line);
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:14px;
       background: rgba(15,23,48,.35);
       flex: 0 0 auto;
       flex-wrap:wrap;
@@ -376,18 +234,60 @@
 
     .periodLabel{
       font-weight:950;
-      min-width:160px;
+      min-width:140px;
       color: var(--text);
     }
 
-    /* Small screens */
-    @media (max-width: 860px){
-      .viewerGrid.compare{ flex-direction:column; }
-      .viewerGrid.compare .pane{ width:100%; height:50%; }
-      .pane{ border-right:none; border-bottom: 1px solid rgba(0,0,0,.08); }
-      .pane:last-child{ border-bottom:none; }
-      #viewerShell{ height: clamp(540px, calc(100vh - 270px), 860px); }
+    /* ===== Forecast zoom viewer ===== */
+    #forecastViewer{
+      width: 100%;
+      height: clamp(520px, calc(100vh - 260px), 820px);
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.20);
+      background: #ffffff;
+      overflow: hidden;
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 0;
     }
+    #viewerStage{
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #ffffff;
+      cursor: grab;
+    }
+    #viewerStage.dragging{ cursor: grabbing; }
+
+    #forecastImg{
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display:block;
+      transform-origin: 0 0;
+      will-change: transform;
+      user-select: none;
+      -webkit-user-drag: none;
+      pointer-events: none;
+    }
+
+    .viewer-overlay{
+      position: absolute;
+      inset: 0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 950;
+      color: rgba(255,255,255,0.95);
+      background: rgba(0,0,0,0.28);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease;
+      z-index: 5;
+    }
+    .viewer-overlay.show{ opacity: 1; }
   </style>
 </head>
 
@@ -429,13 +329,11 @@
         </div>
 
         <div class="viewerArea">
+          <!-- TOP: variable buttons + zoom tools -->
           <div class="topControls">
             <div class="leftControls">
-              <div class="controlsLabel">
-                Variables
-                <span class="hint">Click one for single view, click two for compare. (Max 2.)</span>
-              </div>
-              <div class="varPills" id="varPills" role="group" aria-label="Forecast variables"></div>
+              <span class="label">Variables</span>
+              <div class="pillRow" id="pillRow" aria-label="Variable toggles"></div>
             </div>
 
             <div class="zoomControls">
@@ -446,56 +344,35 @@
             </div>
           </div>
 
-          <!-- MAP VIEWER -->
-          <div id="viewerShell" aria-label="Map viewer">
-            <div class="viewerGrid single" id="viewerGrid">
-              <!-- Pane A -->
-              <div class="pane a" id="paneA">
-                <div class="paneHead">
-                  <div class="paneTag" id="paneTagA">—</div>
-                  <div class="paneValid" id="paneValidA">Valid: —</div>
-                </div>
-                <div class="overlay" id="overlayA">Loading…</div>
-                <div class="viewerStage" id="stageA">
-                  <img class="forecastImg" id="imgA" src="maps/latest_maxt_ndfd.png" alt="Forecast map A" />
-                </div>
-              </div>
+          <!-- TOP: slider moved above the map -->
+          <div class="controlsTop" aria-label="Timeline controls">
+            <div class="sliderRow">
+              <button class="arrowBtn" id="prevBtn" type="button" aria-label="Previous">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
 
-              <!-- Pane B -->
-              <div class="pane b" id="paneB">
-                <div class="paneHead">
-                  <div class="paneTag" id="paneTagB">—</div>
-                  <div class="paneValid" id="paneValidB">Valid: —</div>
-                </div>
-                <div class="overlay" id="overlayB">Loading…</div>
-                <div class="viewerStage" id="stageB">
-                  <img class="forecastImg" id="imgB" src="maps/latest_dew_ndfd.png" alt="Forecast map B" />
-                </div>
-              </div>
+              <div class="periodLabel" id="periodLabel">Period —</div>
+
+              <input type="range" id="forecastSlider" min="0" max="0" step="1" value="0" />
+
+              <button class="arrowBtn" id="nextBtn" type="button" aria-label="Next">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+
+              <div class="pill" id="validLocalPill">Valid: —</div>
             </div>
           </div>
-        </div>
 
-        <!-- CONTROLS BELOW MAP (always visible) -->
-        <div class="controls">
-          <div class="sliderRow">
-            <button class="arrowBtn" id="prevBtn" type="button" aria-label="Previous">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
-
-            <div class="periodLabel" id="periodLabel">Time —</div>
-
-            <input type="range" id="forecastSlider" min="0" max="0" step="1" value="0" />
-
-            <button class="arrowBtn" id="nextBtn" type="button" aria-label="Next">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
-
-            <div class="pill" id="validLocalPill">Aligned: —</div>
+          <!-- MAP (Zoom Viewer) -->
+          <div id="forecastViewer">
+            <div class="viewer-overlay" id="viewerOverlay">Loading…</div>
+            <div id="viewerStage">
+              <img id="forecastImg" src="maps/latest_maxt_ndfd.png" alt="Forecast map" />
+            </div>
           </div>
         </div>
       </section>
@@ -503,77 +380,143 @@
   </main>
 
   <script>
-    // -------------------------------------------------------
-    // WxLaunch Forecast Viewer (Single + Compare)
-    // - Pill toggles (select up to 2 variables)
-    // - Compare mode aligns by valid_utc (intersection)
-    // - No scrolling page; slider always visible
-    // - Zoom/pan inside each pane
-    // - Reset zoom when variable OR frame changes
-    // - Instant switching; no reload button
-    // -------------------------------------------------------
+    // ----------------------------
+    // Manifest-based forecast loader
+    // - Single-pane (old format)
+    // - Variable selection via pill buttons (no dropdown)
+    // - Slider moved to TOP
+    // - Zoom/pan inside map viewer
+    // - Reset zoom on variable OR frame change
+    // - Instant switching (no reload button needed)
+    // ----------------------------
 
     const VARS = [
-      { key: "maxt",  name: "Max Temp",   units: "°F" },
-      { key: "mint",  name: "Min Temp",   units: "°F" },
-      { key: "dew",   name: "Dewpoint",   units: "°F" },
-      { key: "qpf",   name: "QPF",        units: "in" },
-      { key: "snow",  name: "Snow",       units: "in" },
-      { key: "wgust", name: "Wind Gust",  units: "mph" },
+      { key:"maxt",  label:"Max Temp (°F)" },
+      { key:"mint",  label:"Min Temp (°F)" },
+      { key:"dew",   label:"Dewpoint (°F)" },
+      { key:"qpf",   label:"QPF (in)" },
+      { key:"snow",  label:"Snow (in)" },
+      { key:"wgust", label:"Wind Gust (mph)" },
     ];
 
     const els = {
+      pillRow: document.getElementById("pillRow"),
       title: document.getElementById("forecastTitle"),
       subtitle: document.getElementById("forecastSubtitle"),
       updated: document.getElementById("generatedAtPill"),
 
-      pills: document.getElementById("varPills"),
-
-      grid: document.getElementById("viewerGrid"),
-
-      // pane A
-      stageA: document.getElementById("stageA"),
-      imgA: document.getElementById("imgA"),
-      overlayA: document.getElementById("overlayA"),
-      tagA: document.getElementById("paneTagA"),
-      validA: document.getElementById("paneValidA"),
-
-      // pane B
-      stageB: document.getElementById("stageB"),
-      imgB: document.getElementById("imgB"),
-      overlayB: document.getElementById("overlayB"),
-      tagB: document.getElementById("paneTagB"),
-      validB: document.getElementById("paneValidB"),
-
-      // controls
       slider: document.getElementById("forecastSlider"),
       periodLabel: document.getElementById("periodLabel"),
-      alignedPill: document.getElementById("validLocalPill"),
+      validPill: document.getElementById("validLocalPill"),
       prevBtn: document.getElementById("prevBtn"),
       nextBtn: document.getElementById("nextBtn"),
 
+      stage: document.getElementById("viewerStage"),
+      img: document.getElementById("forecastImg"),
+      overlay: document.getElementById("viewerOverlay"),
       zoomIn: document.getElementById("zoomInBtn"),
       zoomOut: document.getElementById("zoomOutBtn"),
       resetView: document.getElementById("resetViewBtn"),
     };
 
-    // cache-busting key from manifests (if present)
+    let selectedVar = "maxt";
+    let manifest = null;
     let cacheKey = "";
     const preloaded = new Map(); // url -> HTMLImageElement
 
-    // Selection state (max 2)
-    let selected = ["maxt"]; // default
-    let manifests = { a: null, b: null };
-    let alignedTimes = [];   // array of canonical UTC strings (ms key)
-    let aligned = { a: new Map(), b: new Map() }; // timeKey(ms)->frame
-    let isCompare = false;
+    // ===== Viewer state (translate + scale on the IMG) =====
+    const viewer = {
+      scale: 1,
+      minScale: 1,
+      maxScale: 5,
+      x: 0,
+      y: 0,
+      dragging: false,
+      dragStartX: 0,
+      dragStartY: 0,
+      startX: 0,
+      startY: 0,
+    };
 
-    // ---------- Utilities ----------
     function clamp(n, lo, hi){ return Math.max(lo, Math.min(hi, n)); }
 
+    function setLoading(on){
+      els.overlay.classList.toggle("show", !!on);
+    }
+
+    function applyTransform(){
+      els.img.style.transform = `translate(${viewer.x}px, ${viewer.y}px) scale(${viewer.scale})`;
+    }
+
+    function resetView(){
+      viewer.scale = 1;
+      viewer.x = 0;
+      viewer.y = 0;
+      applyTransform();
+    }
+
+    function zoomAt(newScale, clientX, clientY){
+      const prev = viewer.scale;
+      viewer.scale = clamp(newScale, viewer.minScale, viewer.maxScale);
+
+      const rect = els.stage.getBoundingClientRect();
+      const px = clientX - rect.left;
+      const py = clientY - rect.top;
+
+      const wx = (px - viewer.x) / prev;
+      const wy = (py - viewer.y) / prev;
+
+      viewer.x = px - wx * viewer.scale;
+      viewer.y = py - wy * viewer.scale;
+
+      applyTransform();
+    }
+
+    // Wheel zoom
+    els.stage.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      const step = (e.deltaY < 0) ? 0.18 : -0.18;
+      zoomAt(viewer.scale + step, e.clientX, e.clientY);
+    }, { passive:false });
+
+    // Drag pan
+    els.stage.addEventListener("mousedown", (e) => {
+      viewer.dragging = true;
+      els.stage.classList.add("dragging");
+      viewer.dragStartX = e.clientX;
+      viewer.dragStartY = e.clientY;
+      viewer.startX = viewer.x;
+      viewer.startY = viewer.y;
+    });
+
+    window.addEventListener("mouseup", () => {
+      viewer.dragging = false;
+      els.stage.classList.remove("dragging");
+    });
+
+    window.addEventListener("mousemove", (e) => {
+      if (!viewer.dragging) return;
+      const dx = e.clientX - viewer.dragStartX;
+      const dy = e.clientY - viewer.dragStartY;
+      viewer.x = viewer.startX + dx;
+      viewer.y = viewer.startY + dy;
+      applyTransform();
+    });
+
+    // Buttons
+    els.zoomIn.addEventListener("click", () => {
+      const r = els.stage.getBoundingClientRect();
+      zoomAt(viewer.scale + 0.35, r.left + r.width/2, r.top + r.height/2);
+    });
+    els.zoomOut.addEventListener("click", () => {
+      const r = els.stage.getBoundingClientRect();
+      zoomAt(viewer.scale - 0.35, r.left + r.width/2, r.top + r.height/2);
+    });
+    els.resetView.addEventListener("click", resetView);
+
+    // ---- URL helpers ----
     function manifestUrl(varName){ return `maps/manifest_${varName}.json`; }
     function frameUrl(file){ return file.startsWith("maps/") ? file : `maps/${file}`; }
-    function latestUrl(varName){ return `maps/latest_${varName}_ndfd.png`; }
 
     function withCacheKey(url){
       if (!cacheKey) return url;
@@ -587,13 +530,6 @@
       return await r.json();
     }
 
-    function preload(url){
-      if (preloaded.has(url)) return;
-      const im = new Image();
-      im.src = url;
-      preloaded.set(url, im);
-    }
-
     function setEnabled(enabled){
       els.slider.disabled = !enabled;
       els.prevBtn.disabled = !enabled;
@@ -601,481 +537,139 @@
     }
 
     function updateButtons(){
-      const n = alignedTimes.length;
+      const n = manifest?.frames?.length || 0;
       const i = Number(els.slider.value || 0);
       els.prevBtn.disabled = !n || i <= 0;
       els.nextBtn.disabled = !n || i >= n - 1;
     }
 
-    function setGridMode(compare){
-      isCompare = !!compare;
-      els.grid.classList.toggle("single", !isCompare);
-      els.grid.classList.toggle("compare", isCompare);
+    // ---- Image loading + preload for speed ----
+    function preload(url){
+      if (preloaded.has(url)) return;
+      const im = new Image();
+      im.src = url;
+      preloaded.set(url, im);
     }
 
-    function niceVarLabel(key){
-      const v = VARS.find(x => x.key === key);
-      return v ? `${v.name}${v.units ? ` (${v.units})` : ""}` : key;
-    }
+    async function setForecastImage(url){
+      resetView(); // ✅ reset zoom on frame/variable change
+      setLoading(true);
 
-    function parseUtcKey(frame){
-      // Canonical alignment key: ms since epoch (UTC)
-      // Prefer valid_utc; fallback to valid_local if that's all we have.
-      const t = frame?.valid_utc || frame?.valid_local || "";
-      const d = new Date(t);
-      const ms = d.getTime();
-      if (!Number.isFinite(ms)) return null;
-      return ms;
-    }
-
-    function fmtAlignedLabel(ms){
-      const d = new Date(Number(ms));
-      if (!Number.isFinite(d.getTime())) return "Time —";
-      // Let browser/local tz format; matches your "valid_local" spirit without requiring parsing strings.
-      return d.toLocaleString([], { weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit" });
-    }
-
-    // ---------- Zoom/Pan Viewer (per pane) ----------
-    function createViewer(stageEl, imgEl){
-      const v = {
-        scale: 1,
-        minScale: 1,
-        maxScale: 5,
-        x: 0,
-        y: 0,
-        dragging: false,
-        dragStartX: 0,
-        dragStartY: 0,
-        startX: 0,
-        startY: 0,
-      };
-
-      function apply(){
-        imgEl.style.transform = `translate(${v.x}px, ${v.y}px) scale(${v.scale})`;
-      }
-
-      function reset(){
-        v.scale = 1;
-        v.x = 0;
-        v.y = 0;
-        apply();
-      }
-
-      function zoomAt(newScale, clientX, clientY){
-        const prev = v.scale;
-        v.scale = clamp(newScale, v.minScale, v.maxScale);
-
-        const rect = stageEl.getBoundingClientRect();
-        const px = clientX - rect.left;
-        const py = clientY - rect.top;
-
-        const wx = (px - v.x) / prev;
-        const wy = (py - v.y) / prev;
-
-        v.x = px - wx * v.scale;
-        v.y = py - wy * v.scale;
-
-        apply();
-      }
-
-      stageEl.addEventListener("wheel", (e) => {
-        e.preventDefault();
-        const step = (e.deltaY < 0) ? 0.18 : -0.18;
-        zoomAt(v.scale + step, e.clientX, e.clientY);
-      }, { passive:false });
-
-      stageEl.addEventListener("mousedown", (e) => {
-        v.dragging = true;
-        stageEl.classList.add("dragging");
-        v.dragStartX = e.clientX;
-        v.dragStartY = e.clientY;
-        v.startX = v.x;
-        v.startY = v.y;
-      });
-
-      window.addEventListener("mouseup", () => {
-        v.dragging = false;
-        stageEl.classList.remove("dragging");
-      });
-
-      window.addEventListener("mousemove", (e) => {
-        if (!v.dragging) return;
-        const dx = e.clientX - v.dragStartX;
-        const dy = e.clientY - v.dragStartY;
-        v.x = v.startX + dx;
-        v.y = v.startY + dy;
-        apply();
-      });
-
-      return {
-        reset,
-        zoomInCenter(){
-          const r = stageEl.getBoundingClientRect();
-          zoomAt(v.scale + 0.35, r.left + r.width/2, r.top + r.height/2);
-        },
-        zoomOutCenter(){
-          const r = stageEl.getBoundingClientRect();
-          zoomAt(v.scale - 0.35, r.left + r.width/2, r.top + r.height/2);
-        }
-      };
-    }
-
-    const viewerA = createViewer(els.stageA, els.imgA);
-    const viewerB = createViewer(els.stageB, els.imgB);
-
-    // Zoom controls apply to both panes (best compare UX)
-    els.zoomIn.addEventListener("click", () => { viewerA.zoomInCenter(); if (isCompare) viewerB.zoomInCenter(); });
-    els.zoomOut.addEventListener("click", () => { viewerA.zoomOutCenter(); if (isCompare) viewerB.zoomOutCenter(); });
-    els.resetView.addEventListener("click", () => { viewerA.reset(); if (isCompare) viewerB.reset(); });
-
-    // ---------- Pane rendering ----------
-    function setOverlay(pane, show, text, isNoData=false){
-      const el = pane === "a" ? els.overlayA : els.overlayB;
-      if (!show){
-        el.classList.remove("show","noData");
-        el.textContent = "Loading…";
-        return;
-      }
-      el.classList.add("show");
-      if (isNoData) el.classList.add("noData"); else el.classList.remove("noData");
-
-      if (isNoData){
-        el.innerHTML = `<div class="msg"><div>No data for this time</div><div class="tiny">${text || ""}</div></div>`;
-      } else {
-        el.textContent = text || "Loading…";
-      }
-    }
-
-    async function setPaneImage(pane, url){
-      // Spec: reset zoom when frame changes
-      if (pane === "a") viewerA.reset(); else viewerB.reset();
-
-      setOverlay(pane, true, "Loading…");
-      const img = pane === "a" ? els.imgA : els.imgB;
-
-      img.src = url;
+      els.img.src = url;
 
       try{
-        if (img.decode) await img.decode();
-      } catch(_){}
+        if (els.img.decode) await els.img.decode();
+      }catch(_){}
 
-      setOverlay(pane, false);
+      setLoading(false);
     }
 
-    function setPaneMeta(pane, varKey, validText){
-      const tag = pane === "a" ? els.tagA : els.tagB;
-      const vp  = pane === "a" ? els.validA : els.validB;
-      tag.textContent = niceVarLabel(varKey || "—");
-      vp.textContent  = `Valid: ${validText || "—"}`;
+    function frameLabelFor(varName, idx){
+      // keep it simple / consistent
+      return `Day ${idx + 1} of ${(manifest?.frames?.length || 0) || 1}`;
     }
 
-    // ---------- Build pills UI ----------
-    function renderPills(){
-      els.pills.innerHTML = "";
-
-      VARS.forEach(v => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "varBtn";
-        btn.dataset.var = v.key;
-        btn.setAttribute("aria-pressed", selected.includes(v.key) ? "true" : "false");
-
-        // show which slot (A/B) a variable occupies when selected
-        let dot = "";
-        const idx = selected.indexOf(v.key);
-        if (idx === 0) dot = `<span class="slotDot a" title="Pane A"></span>`;
-        else if (idx === 1) dot = `<span class="slotDot b" title="Pane B"></span>`;
-        else dot = `<span class="slotDot" style="opacity:.35"></span>`;
-
-        btn.innerHTML = `${dot}<span>${v.name}</span>`;
-
-        btn.addEventListener("click", () => toggleVar(v.key));
-        els.pills.appendChild(btn);
-      });
+    function primePreloadAround(i){
+      const frames = manifest?.frames || [];
+      const next = frames[i + 1]?.file;
+      const prev = frames[i - 1]?.file;
+      if (next) preload(withCacheKey(frameUrl(next)));
+      if (prev) preload(withCacheKey(frameUrl(prev)));
     }
 
-    function updatePillPressed(){
-      [...els.pills.querySelectorAll(".varBtn")].forEach(btn => {
-        const k = btn.dataset.var;
-        btn.setAttribute("aria-pressed", selected.includes(k) ? "true" : "false");
+    async function showFrame(idx){
+      if (!manifest?.frames?.length) return;
 
-        const dot = btn.querySelector(".slotDot");
-        if (!dot) return;
-        dot.classList.remove("a","b");
-        dot.style.opacity = "";
-        dot.style.background = "";
-        dot.style.borderColor = "";
-
-        const idx = selected.indexOf(k);
-        if (idx === 0) dot.classList.add("a");
-        else if (idx === 1) dot.classList.add("b");
-        else dot.style.opacity = ".35";
-      });
-    }
-
-    function toggleVar(key){
-      // If already selected, remove it.
-      if (selected.includes(key)){
-        selected = selected.filter(k => k !== key);
-        if (selected.length === 0) selected = ["maxt"]; // never allow empty
-      } else {
-        // Add; keep max 2 by dropping the oldest
-        if (selected.length >= 2) selected.shift();
-        selected.push(key);
-      }
-
-      updatePillPressed();
-      loadSelection();
-    }
-
-    // ---------- Alignment logic ----------
-    function buildAlignment(){
-      alignedTimes = [];
-      aligned = { a: new Map(), b: new Map() };
-
-      const ma = manifests.a;
-      const mb = manifests.b;
-
-      if (!ma?.frames?.length){
-        return;
-      }
-
-      // Build A map
-      const mapA = new Map();
-      for (const fr of ma.frames){
-        const ms = parseUtcKey(fr);
-        if (ms == null) continue;
-        mapA.set(ms, fr);
-      }
-
-      if (!isCompare || !mb?.frames?.length){
-        alignedTimes = [...mapA.keys()].sort((x,y)=>x-y);
-        aligned.a = mapA;
-        return;
-      }
-
-      // Build B map
-      const mapB = new Map();
-      for (const fr of mb.frames){
-        const ms = parseUtcKey(fr);
-        if (ms == null) continue;
-        mapB.set(ms, fr);
-      }
-
-      // Intersection by time (production-safe)
-      const common = [];
-      for (const ms of mapA.keys()){
-        if (mapB.has(ms)) common.push(ms);
-      }
-      common.sort((x,y)=>x-y);
-
-      alignedTimes = common;
-      aligned.a = mapA;
-      aligned.b = mapB;
-    }
-
-    function updateHeaderMeta(){
-      // Prefer A manifest, but show compare status in subtitle
-      const a = manifests.a;
-      const b = manifests.b;
-
-      const aKey = selected[0];
-      const bKey = selected[1];
-
-      els.title.textContent = isCompare ? "Forecast Viewer • Compare" : "Forecast Viewer";
-      if (isCompare){
-        const aLbl = niceVarLabel(aKey);
-        const bLbl = niceVarLabel(bKey);
-        els.subtitle.textContent = `${aLbl}  vs  ${bLbl} • NWS/NDFD`;
-      } else {
-        els.subtitle.textContent = `${niceVarLabel(aKey)} • NWS/NDFD`;
-      }
-
-      // Updated: pick most recent-looking string if both present (string compare isn’t reliable),
-      // but for a clean UI we’ll show A if present else B.
-      const stamp = a?.generated_at_utc || b?.generated_at_utc || "—";
-      els.updated.textContent = `Updated: ${stamp}`;
-    }
-
-    function primePreloadAround(idx){
-      const i = clamp(Number(idx), 0, Math.max(0, alignedTimes.length - 1));
-      const msPrev = alignedTimes[i - 1];
-      const msNext = alignedTimes[i + 1];
-
-      const frAprev = msPrev != null ? aligned.a.get(msPrev) : null;
-      const frAnext = msNext != null ? aligned.a.get(msNext) : null;
-      if (frAprev?.file) preload(withCacheKey(frameUrl(frAprev.file)));
-      if (frAnext?.file) preload(withCacheKey(frameUrl(frAnext.file)));
-
-      if (isCompare){
-        const frBprev = msPrev != null ? aligned.b.get(msPrev) : null;
-        const frBnext = msNext != null ? aligned.b.get(msNext) : null;
-        if (frBprev?.file) preload(withCacheKey(frameUrl(frBprev.file)));
-        if (frBnext?.file) preload(withCacheKey(frameUrl(frBnext.file)));
-      }
-    }
-
-    async function showIndex(idx){
-      const n = alignedTimes.length;
-      if (!n){
-        els.periodLabel.textContent = "Time —";
-        els.alignedPill.textContent = isCompare ? "Aligned: none" : "Aligned: —";
-        setEnabled(false);
-        updateButtons();
-        return;
-      }
-
-      const i = clamp(Number(idx), 0, n - 1);
+      const frames = manifest.frames;
+      const i = clamp(Number(idx), 0, frames.length - 1);
       els.slider.value = i;
 
-      const ms = alignedTimes[i];
-      els.periodLabel.textContent = fmtAlignedLabel(ms);
-      els.alignedPill.textContent = isCompare ? `Aligned: ${n} common times` : `Aligned: ${n} times`;
+      const fr = frames[i];
+      els.validPill.textContent = `Valid: ${fr.valid_local || fr.valid_utc || "—"}`;
+      els.periodLabel.textContent = frameLabelFor(selectedVar, i);
 
-      const aKey = selected[0];
-      const frA = aligned.a.get(ms);
-
-      if (frA?.file){
-        setPaneMeta("a", aKey, frA.valid_local || frA.valid_utc || "—");
-        await setPaneImage("a", withCacheKey(frameUrl(frA.file)));
-      } else {
-        setPaneMeta("a", aKey, "—");
-        setOverlay("a", true, "", true);
-        els.imgA.src = withCacheKey(latestUrl(aKey));
-        viewerA.reset();
-      }
-
-      if (isCompare){
-        const bKey = selected[1];
-        const frB = aligned.b.get(ms);
-
-        if (frB?.file){
-          setPaneMeta("b", bKey, frB.valid_local || frB.valid_utc || "—");
-          await setPaneImage("b", withCacheKey(frameUrl(frB.file)));
-        } else {
-          setPaneMeta("b", bKey, "—");
-          setOverlay("b", true, "", true);
-          els.imgB.src = withCacheKey(latestUrl(bKey));
-          viewerB.reset();
-        }
-      }
+      const url = withCacheKey(frameUrl(fr.file));
+      await setForecastImage(url);
 
       updateButtons();
       primePreloadAround(i);
     }
 
-    // ---------- Loading manifests ----------
-    async function loadManifestForVar(varKey){
+    async function loadVariable(varName){
+      selectedVar = varName;
+      setLoading(true);
+      setEnabled(false);
+
       try{
-        const m = await fetchJson(manifestUrl(varKey));
-        return m;
-      } catch(_){
-        return null;
-      }
-    }
+        const m = await fetchJson(manifestUrl(varName));
+        manifest = m;
 
-    async function loadSelection(){
-      // Spec: reset zoom when variable changes
-      viewerA.reset();
-      viewerB.reset();
+        // cache key helps force fresh frames after updates
+        cacheKey = m.ndfd_last_modified || m.generated_at_utc || "";
 
-      // mode + panes
-      setGridMode(selected.length >= 2);
+        els.title.textContent = m.title || "Forecast Viewer";
+        els.subtitle.textContent = m.units ? `${m.var || varName} • ${m.units}` : `${m.var || varName}`;
+        els.updated.textContent = `Updated: ${m.generated_at_utc || "—"}`;
 
-      // update tags early for a snappy feel
-      setPaneMeta("a", selected[0], "—");
-      if (isCompare) setPaneMeta("b", selected[1], "—");
+        const n = Number(m.frame_count || (m.frames?.length || 0));
+        els.slider.min = 0;
+        els.slider.max = Math.max(0, n - 1);
+        els.slider.value = 0;
 
-      setOverlay("a", true, "Loading…");
-      if (isCompare) setOverlay("b", true, "Loading…");
+        (m.frames || []).slice(0, 3).forEach(fr => preload(withCacheKey(frameUrl(fr.file))));
 
-      // Load manifests
-      const aKey = selected[0];
-      const bKey = selected[1];
-
-      manifests.a = await loadManifestForVar(aKey);
-      manifests.b = isCompare ? await loadManifestForVar(bKey) : null;
-
-      // Cache key: if any manifest provides a stable key, use it
-      cacheKey = manifests.a?.ndfd_last_modified ||
-                 manifests.a?.generated_at_utc ||
-                 manifests.b?.ndfd_last_modified ||
-                 manifests.b?.generated_at_utc ||
-                 "";
-
-      updateHeaderMeta();
-
-      // Build alignment timeline
-      buildAlignment();
-
-      // Slider setup
-      const n = alignedTimes.length;
-      els.slider.min = 0;
-      els.slider.max = Math.max(0, n - 1);
-      els.slider.value = 0;
-
-      if (!n){
-        // Fallback: show latest images, disable timeline controls
+        setEnabled(true);
+        await showFrame(0);
+      } catch (_e){
+        // Fallback if manifest missing
+        manifest = null;
+        els.title.textContent = "Forecast Viewer";
+        els.subtitle.textContent = `${varName} • (no manifest yet)`;
+        els.updated.textContent = "Updated: —";
+        els.validPill.textContent = "Valid: —";
+        els.periodLabel.textContent = "Period —";
+        els.slider.min = 0; els.slider.max = 0; els.slider.value = 0;
         setEnabled(false);
 
-        // Pane A latest
-        setOverlay("a", false);
-        els.imgA.src = withCacheKey(latestUrl(aKey));
-        setPaneMeta("a", aKey, "—");
-
-        // Pane B latest
-        if (isCompare){
-          setOverlay("b", false);
-          els.imgB.src = withCacheKey(latestUrl(bKey));
-          setPaneMeta("b", bKey, "—");
-          els.alignedPill.textContent = "Aligned: none";
-        } else {
-          els.alignedPill.textContent = "Aligned: —";
-        }
-
-        els.periodLabel.textContent = "Time —";
-        updateButtons();
-        return;
+        await setForecastImage(withCacheKey(`maps/latest_${varName}_ndfd.png`));
+      } finally {
+        setLoading(false);
       }
-
-      // Preload first couple aligned frames for instant feel
-      const ms0 = alignedTimes[0];
-      const frA0 = aligned.a.get(ms0);
-      if (frA0?.file) preload(withCacheKey(frameUrl(frA0.file)));
-      if (isCompare){
-        const frB0 = aligned.b.get(ms0);
-        if (frB0?.file) preload(withCacheKey(frameUrl(frB0.file)));
-      }
-      const ms1 = alignedTimes[1];
-      if (ms1 != null){
-        const frA1 = aligned.a.get(ms1);
-        if (frA1?.file) preload(withCacheKey(frameUrl(frA1.file)));
-        if (isCompare){
-          const frB1 = aligned.b.get(ms1);
-          if (frB1?.file) preload(withCacheKey(frameUrl(frB1.file)));
-        }
-      }
-
-      setEnabled(true);
-      await showIndex(0);
     }
 
-    // ---------- Events ----------
-    els.slider.addEventListener("input", (e) => showIndex(e.target.value));
-    els.prevBtn.addEventListener("click", () => showIndex(Number(els.slider.value) - 1));
-    els.nextBtn.addEventListener("click", () => showIndex(Number(els.slider.value) + 1));
+    // ---- Variable pill UI ----
+    function renderVarPills(){
+      els.pillRow.innerHTML = "";
+      for (const v of VARS){
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "chip";
+        b.dataset.key = v.key;
+        b.setAttribute("aria-pressed", v.key === selectedVar ? "true" : "false");
+        b.innerHTML = `<span class="dot" aria-hidden="true"></span><span>${v.label}</span>`;
+        b.addEventListener("click", () => {
+          if (selectedVar === v.key) return;
+          setActivePill(v.key);
+          loadVariable(v.key); // ✅ instant switch
+        });
+        els.pillRow.appendChild(b);
+      }
+    }
 
-    // Keyboard shortcuts (nice-to-have, production-safe)
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowLeft") { e.preventDefault(); els.prevBtn.click(); }
-      if (e.key === "ArrowRight"){ e.preventDefault(); els.nextBtn.click(); }
-      if (e.key.toLowerCase() === "r"){ e.preventDefault(); els.resetView.click(); }
-    });
+    function setActivePill(key){
+      [...els.pillRow.querySelectorAll(".chip")].forEach(btn => {
+        btn.setAttribute("aria-pressed", btn.dataset.key === key ? "true" : "false");
+      });
+    }
 
-    // ---------- Init ----------
-    renderPills();
-    updatePillPressed();
-    loadSelection();
+    // ---- Events ----
+    els.slider.addEventListener("input", (e) => showFrame(e.target.value));
+    els.prevBtn.addEventListener("click", () => showFrame(Number(els.slider.value) - 1));
+    els.nextBtn.addEventListener("click", () => showFrame(Number(els.slider.value) + 1));
+
+    // Init
+    renderVarPills();
+    loadVariable(selectedVar);
   </script>
 </body>
 </html>
