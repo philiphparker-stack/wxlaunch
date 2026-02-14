@@ -1,229 +1,473 @@
+<!-- forecasts.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>WxLaunch Forecasts</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WxLaunch | Forecasts</title>
 
-<style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg,#0b132b,#1c2541,#3a506b);
-  color: white;
-}
+  <style>
+    :root{
+      --bg:#0b1020;
+      --card:#121a33;
+      --card2:#0f1730;
+      --text:#eaf0ff;
+      --muted:#a9b4d6;
+      --line:rgba(255,255,255,.10);
+      --accent:#6aa7ff;
+      --accent2:#63ffcf;
+      --btnbg: rgba(255,255,255,.07);
+      --btnbd: rgba(255,255,255,.14);
+      --btnbgHover: rgba(255,255,255,.10);
+      --btnbdHover: rgba(106,167,255,.35);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(106,167,255,.18), transparent 60%),
+                  radial-gradient(1000px 500px at 80% 10%, rgba(99,255,207,.12), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+    }
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:1200px;margin:0 auto;padding:0 16px}
 
-header {
-  padding: 16px 24px;
-  font-size: 22px;
-  font-weight: bold;
-}
+    /* ---------- Header (smaller) ---------- */
+    header{
+      position:sticky;top:0;z-index:50;
+      border-bottom:1px solid var(--line);
+      background: rgba(11,16,32,.82);
+      backdrop-filter: blur(10px);
+    }
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:10px 0;
+      gap:12px;
+    }
+    .brand{
+      display:flex;align-items:center;gap:10px;
+      font-weight:900;letter-spacing:.3px;
+      line-height:1;
+    }
+    .logo{
+      width:28px;height:28px;border-radius:9px;
+      background: linear-gradient(135deg, rgba(106,167,255,.9), rgba(99,255,207,.7));
+      box-shadow: 0 8px 24px rgba(0,0,0,.35);
+      flex:0 0 auto;
+    }
+    .brand small{
+      display:block;
+      margin-top:4px;
+      font-weight:700;
+      color:var(--muted);
+      font-size:11px;
+      letter-spacing:.2px;
+    }
+    nav{
+      display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;
+      font-weight:700;color:var(--muted);
+    }
+    nav a{
+      padding:7px 9px;border-radius:10px;
+    }
+    nav a.active{
+      background: rgba(106,167,255,.14);
+      color: var(--text);
+      border:1px solid rgba(106,167,255,.22);
+    }
+    nav a:hover{color:var(--text)}
 
-.container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 20px;
-}
+    .sectionTitle{
+      margin:18px 0 10px;
+      color:var(--muted);
+      font-weight:900;
+      letter-spacing:.3px;
+      text-transform:uppercase;
+      font-size:12px;
+    }
 
-.card {
-  background: rgba(255,255,255,0.05);
-  border-radius: 14px;
-  padding: 20px;
-  backdrop-filter: blur(8px);
-}
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+      padding:12px 0 24px;
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow: 0 18px 48px rgba(0,0,0,.35);
+      overflow:hidden;
+    }
+    .cardHead{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:14px 14px 12px;
+      border-bottom:1px solid var(--line);
+      background: rgba(18,26,51,.45);
+    }
+    .cardHead h1{margin:0;font-size:16px;letter-spacing:.2px}
+    .sub{font-size:13px;color:var(--muted);margin:6px 0 0}
+    .meta{
+      display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:700;
+    }
+    .pill{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      padding:6px 10px;border-radius:999px;
+    }
 
-.controls {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-bottom: 16px;
-}
+    .controls{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:12px 14px;
+      border-bottom:1px solid var(--line);
+      background: rgba(15,23,48,.35);
+      flex-wrap:wrap;
+    }
+    .leftControls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 
-select, button {
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: none;
-  font-size: 14px;
-}
+    select, button{
+      border-radius:12px;
+      border:1px solid var(--btnbd);
+      background: var(--btnbg);
+      color: var(--text);
+      padding:8px 10px;
+      font-weight:900;
+      cursor:pointer;
+      outline:none;
+    }
+    select option{background:#0b1020}
+    button:hover{border-color: var(--btnbdHover); background: var(--btnbgHover);}
+    button:disabled{opacity:.55;cursor:not-allowed}
 
-button {
-  cursor: pointer;
-  background: #3a86ff;
-  color: white;
-}
+    .sliderRow{
+      display:flex;align-items:center;gap:10px;
+      width:100%;
+      flex-wrap:wrap;
+    }
+    .arrowBtn{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:44px;height:36px;padding:0;border-radius:12px;
+      user-select:none;
+    }
+    .arrowBtn svg{width:18px;height:18px;opacity:.95}
+    input[type="range"]{
+      width: min(820px, 100%);
+      accent-color: var(--accent);
+    }
+    .periodLabel{
+      font-weight:950;color:var(--text);
+      min-width:150px;
+    }
 
-button.arrow {
-  font-size: 20px;
-  padding: 6px 14px;
-  background: #1f4068;
-}
+    .mapArea{padding:12px 14px 16px;background: rgba(0,0,0,.06)}
+    .mapWrap{
+      position:relative;
+      display:flex;justify-content:center;align-items:center;
+      border-radius:14px;overflow:hidden;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.02);
+      min-height: 320px;
+    }
+    img{width:100%;height:auto;display:block}
 
-.slider-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
+    .loading{
+      position:absolute;inset:0;display:none;
+      align-items:center;justify-content:center;gap:10px;
+      background: rgba(11,16,32,.55);
+      backdrop-filter: blur(2px);
+      color: var(--text);
+      font-weight:900;letter-spacing:.2px;
+    }
+    .loading.on{display:flex}
+    .dot{width:8px;height:8px;border-radius:50%;background: var(--accent);animation:pulse 1s infinite ease-in-out}
+    .dot:nth-child(2){animation-delay:.15s}
+    .dot:nth-child(3){animation-delay:.30s}
+    @keyframes pulse{0%,100%{transform:scale(1);opacity:.55}50%{transform:scale(1.6);opacity:1}}
 
-.slider-row span {
-  min-width: 120px;
-  font-weight: bold;
-}
-
-input[type=range] {
-  flex: 1;
-}
-
-.valid-label {
-  text-align: right;
-  margin-top: 4px;
-  font-size: 14px;
-  opacity: 0.9;
-}
-
-img {
-  width: 100%;
-  border-radius: 10px;
-  margin-top: 10px;
-}
-</style>
+    footer{
+      padding:22px 0 34px;
+      color:var(--muted);
+      font-size:12px;
+      border-top:1px solid var(--line);
+      margin-top:20px;
+    }
+  </style>
 </head>
 
 <body>
+  <header>
+    <div class="wrap">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            WxLaunch
+            <small>Government data only • NWS / NOAA</small>
+          </div>
+        </div>
 
-<header>WxLaunch Forecasts</header>
-
-<div class="container">
-  <div class="card">
-
-    <div class="controls">
-      <label>Variable:</label>
-
-      <select id="varSelect">
-        <option value="maxt">Max Temp (°F)</option>
-        <option value="mint">Min Temp (°F)</option>
-        <option value="dew">Dewpoint (°F)</option>
-        <option value="qpf">QPF (in)</option>
-        <option value="snow">Snow (in)</option>
-        <option value="wgust">Wind Gust (mph)</option>
-      </select>
-
-      <button onclick="loadProduct()">Reload</button>
+        <nav aria-label="Primary navigation">
+          <a href="index.html">Home</a>
+          <a href="basics.html">Basics</a>
+          <a href="winter.html">Winter</a>
+          <a href="tropical.html">Tropical</a>
+          <a href="severe.html">Severe</a>
+          <a class="active" href="forecasts.html">Forecasts</a>
+          <a href="soundings.html">Soundings</a>
+          <a href="models.html">Models</a>
+        </nav>
+      </div>
     </div>
+  </header>
 
-    <div class="slider-row">
-      <button class="arrow" onclick="prevFrame()">◀</button>
+  <main class="wrap">
+    <div class="sectionTitle">Forecasts</div>
 
-      <span id="periodLabel">Day 1</span>
+    <div class="grid">
+      <section class="card" aria-label="Forecast viewer">
+        <div class="cardHead">
+          <div>
+            <h1 id="forecastTitle">Forecast Viewer</h1>
+            <div class="sub" id="forecastSubtitle">NWS/NDFD • Daily frames where available</div>
+          </div>
+          <div class="meta">
+            <span class="pill" id="generatedAtPill">Updated: —</span>
+          </div>
+        </div>
 
-      <input type="range" id="frameSlider" min="0" max="0" value="0" />
+        <div class="controls">
+          <div class="leftControls">
+            <label for="varSelect" style="font-weight:950;color:var(--muted)">Variable</label>
+            <select id="varSelect">
+              <option value="maxt">Max Temp (°F)</option>
+              <option value="mint">Min Temp (°F)</option>
+              <option value="dew">Dewpoint (°F)</option>
+              <option value="qpf">QPF (in)</option>
+              <option value="snow">Snow (in)</option>
+              <option value="wgust">Wind Gust (mph)</option>
+            </select>
 
-      <button class="arrow" onclick="nextFrame()">▶</button>
+            <!-- keep Reload as optional; dropdown change auto-loads -->
+            <button id="reloadBtn" type="button" title="Reload this product">Reload</button>
+          </div>
+
+          <div class="sliderRow">
+            <button class="arrowBtn" id="prevBtn" type="button" title="Previous period" aria-label="Previous period">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+
+            <div class="periodLabel" id="periodLabel">Period —</div>
+
+            <input type="range" id="forecastSlider" min="0" max="0" step="1" value="0" />
+
+            <button class="arrowBtn" id="nextBtn" type="button" title="Next period" aria-label="Next period">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+
+            <div class="pill" id="validLocalPill">Valid: —</div>
+          </div>
+        </div>
+
+        <div class="mapArea">
+          <div class="mapWrap">
+            <div class="loading" id="loadingOverlay">
+              Loading <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            </div>
+            <img id="forecastImage" src="maps/latest_maxt_ndfd.png" alt="Forecast map" />
+          </div>
+        </div>
+      </section>
     </div>
+  </main>
 
-    <div class="valid-label" id="validLabel"></div>
+  <footer>
+    <div class="wrap">
+      WxLaunch • NWS/NDFD GRIB2 → pygrib → matplotlib/cartopy → PNGs in <code>maps/</code>
+    </div>
+  </footer>
 
-    <img id="forecastImg" src="" />
+  <script>
+    const els = {
+      varSelect: document.getElementById("varSelect"),
+      reloadBtn: document.getElementById("reloadBtn"),
+      title: document.getElementById("forecastTitle"),
+      subtitle: document.getElementById("forecastSubtitle"),
+      generatedAt: document.getElementById("generatedAtPill"),
+      slider: document.getElementById("forecastSlider"),
+      periodLabel: document.getElementById("periodLabel"),
+      validPill: document.getElementById("validLocalPill"),
+      img: document.getElementById("forecastImage"),
+      prevBtn: document.getElementById("prevBtn"),
+      nextBtn: document.getElementById("nextBtn"),
+      loading: document.getElementById("loadingOverlay"),
+    };
 
-  </div>
-</div>
+    let manifest = null;
+    let cacheKey = "";
+    const preloaded = new Map();
 
-<script>
-let manifest = null;
-let currentVar = "maxt";
-let currentFrame = 0;
-let preloadedImages = [];
+    function setLoading(on){ els.loading.classList.toggle("on", !!on); }
+    function clamp(n, lo, hi){ return Math.max(lo, Math.min(hi, n)); }
 
-/* ---------- PATH FIX (important) ---------- */
-function frameUrl(frameFile) {
-  if (!frameFile) return "";
-  if (frameFile.startsWith("http")) return frameFile;
-  if (frameFile.startsWith("maps/")) return frameFile;
-  return `maps/${frameFile}`;
-}
+    function manifestUrl(varName){ return `maps/manifest_${varName}.json`; }
 
-function latestUrl(varName) {
-  return `maps/latest_${varName}_ndfd.png`;
-}
+    // IMPORTANT: avoids maps/maps double-prefix
+    function frameUrl(frameFile){
+      if (!frameFile) return "";
+      if (frameFile.startsWith("http")) return frameFile;
+      if (frameFile.startsWith("maps/")) return frameFile;
+      return `maps/${frameFile}`;
+    }
 
-/* ---------- LOAD PRODUCT ---------- */
-async function loadProduct() {
-  currentVar = document.getElementById("varSelect").value;
+    function latestUrl(varName){
+      return `maps/latest_${varName}_ndfd.png`;
+    }
 
-  try {
-    const res = await fetch(`maps/manifest_${currentVar}.json`);
-    manifest = await res.json();
+    function withCacheKey(url){
+      if (!cacheKey) return url;
+      const sep = url.includes("?") ? "&" : "?";
+      return url + sep + "v=" + encodeURIComponent(cacheKey);
+    }
 
-    setupSlider();
-    preloadFrames();
-    showFrame(0);
+    function setEnabled(enabled){
+      els.slider.disabled = !enabled;
+      els.prevBtn.disabled = !enabled;
+      els.nextBtn.disabled = !enabled;
+    }
 
-  } catch (err) {
-    console.warn("Manifest failed, using latest image fallback.");
-    manifest = null;
-    document.getElementById("forecastImg").src = latestUrl(currentVar);
-    document.getElementById("validLabel").innerText = "";
-  }
-}
+    function updateButtons(){
+      if (!manifest?.frames?.length){
+        els.prevBtn.disabled = true;
+        els.nextBtn.disabled = true;
+        return;
+      }
+      const i = Number(els.slider.value);
+      els.prevBtn.disabled = (i <= 0);
+      els.nextBtn.disabled = (i >= manifest.frames.length - 1);
+    }
 
-/* ---------- SETUP SLIDER ---------- */
-function setupSlider() {
-  const slider = document.getElementById("frameSlider");
+    function setPeriodLabel(i){
+      const total = manifest?.frames?.length || 0;
+      els.periodLabel.textContent = total ? `Day ${i + 1} of ${total}` : "Day —";
+    }
 
-  slider.max = manifest.frame_count - 1;
-  slider.value = 0;
+    async function showFrame(i){
+      if (!manifest?.frames?.length) return;
 
-  slider.oninput = (e) => {
-    showFrame(parseInt(e.target.value));
-  };
-}
+      const idx = clamp(Number(i), 0, manifest.frames.length - 1);
+      els.slider.value = String(idx);
+      setPeriodLabel(idx);
 
-/* ---------- PRELOAD (FASTER SWITCHING) ---------- */
-function preloadFrames() {
-  preloadedImages = [];
+      const fr = manifest.frames[idx];
+      els.validPill.textContent = `Valid: ${fr.valid_local || fr.valid_utc || "—"}`;
 
-  manifest.frames.forEach(frame => {
-    const img = new Image();
-    img.src = frameUrl(frame.file);
-    preloadedImages.push(img);
-  });
-}
+      const raw = frameUrl(fr.file);
+      const url = withCacheKey(raw);
 
-/* ---------- SHOW FRAME ---------- */
-function showFrame(idx) {
-  currentFrame = idx;
+      setLoading(true);
+      els.img.src = url;
 
-  const frame = manifest.frames[idx];
+      try { if (els.img.decode) await els.img.decode(); } catch (_) {}
+      setLoading(false);
 
-  document.getElementById("forecastImg").src = frameUrl(frame.file);
-  document.getElementById("validLabel").innerText = frame.valid_local;
+      updateButtons();
+    }
 
-  document.getElementById("periodLabel").innerText =
-    `Day ${idx + 1}`;
+    function preloadFrames(){
+      if (!manifest?.frames?.length) return;
+      for (const fr of manifest.frames){
+        const raw = frameUrl(fr.file);
+        const url = withCacheKey(raw);
+        if (preloaded.has(url)) continue;
+        const im = new Image();
+        im.decoding = "async";
+        im.loading = "eager";
+        im.src = url;
+        preloaded.set(url, im);
+      }
+    }
 
-  document.getElementById("frameSlider").value = idx;
-}
+    async function loadProduct(varName){
+      setLoading(true);
+      setEnabled(false);
 
-/* ---------- ARROWS ---------- */
-function nextFrame() {
-  if (!manifest) return;
+      manifest = null;
+      cacheKey = "";
 
-  if (currentFrame < manifest.frame_count - 1) {
-    showFrame(currentFrame + 1);
-  }
-}
+      els.title.textContent = "Forecast Viewer";
+      els.subtitle.textContent = "NWS/NDFD • Daily frames where available";
+      els.generatedAt.textContent = "Updated: —";
+      els.validPill.textContent = "Valid: —";
+      els.periodLabel.textContent = "Day —";
 
-function prevFrame() {
-  if (!manifest) return;
+      // cache-bust the manifest only
+      const mUrl = `${manifestUrl(varName)}?t=${Date.now()}`;
 
-  if (currentFrame > 0) {
-    showFrame(currentFrame - 1);
-  }
-}
+      try{
+        const res = await fetch(mUrl, { cache:"no-store" });
+        if (!res.ok) throw new Error(`Manifest fetch failed (${res.status})`);
+        const data = await res.json();
 
-/* ---------- INIT ---------- */
-window.onload = loadProduct;
-</script>
+        if (!Array.isArray(data.frames) || data.frames.length === 0){
+          throw new Error("Manifest has no frames");
+        }
 
+        manifest = data;
+        cacheKey = data.generated_at_utc || String(data.frame_count || data.frames.length);
+
+        els.title.textContent = data.title || "Forecast Viewer";
+        els.generatedAt.textContent = `Updated: ${data.generated_at_utc || "—"}`;
+
+        els.slider.min = "0";
+        els.slider.max = String(data.frames.length - 1);
+        els.slider.value = "0";
+
+        setEnabled(true);
+        preloadFrames();
+        await showFrame(0);
+      } catch(e){
+        // fallback to latest image
+        const fallback = `${latestUrl(varName)}?t=${Date.now()}`;
+        els.img.src = fallback;
+        setEnabled(false);
+        setLoading(false);
+      }
+    }
+
+    // EVENTS
+    els.slider.addEventListener("input", (e) => showFrame(e.target.value));
+
+    els.prevBtn.addEventListener("click", () => {
+      if (!manifest?.frames?.length) return;
+      showFrame(Number(els.slider.value) - 1);
+    });
+
+    els.nextBtn.addEventListener("click", () => {
+      if (!manifest?.frames?.length) return;
+      showFrame(Number(els.slider.value) + 1);
+    });
+
+    // ✅ IMPORTANT CHANGE: dropdown change instantly loads (no reload required)
+    els.varSelect.addEventListener("change", () => loadProduct(els.varSelect.value));
+    els.reloadBtn.addEventListener("click", () => loadProduct(els.varSelect.value));
+
+    // keyboard arrows
+    window.addEventListener("keydown", (e) => {
+      if (!manifest?.frames?.length) return;
+      if (e.key === "ArrowLeft") els.prevBtn.click();
+      if (e.key === "ArrowRight") els.nextBtn.click();
+    });
+
+    // initial load
+    loadProduct(els.varSelect.value);
+  </script>
 </body>
 </html>
