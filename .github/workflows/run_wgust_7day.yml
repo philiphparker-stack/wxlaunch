@@ -36,7 +36,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add maps/*.png maps/*.json || true
+          # Only commit the outputs we actually want in the repo
+          git add maps/ndfd_wgust_f*.png
+          git add maps/latest_wgust_ndfd.png
+          git add maps/manifest_wgust.json
 
           if git diff --cached --quiet; then
             echo "No map changes to commit."
