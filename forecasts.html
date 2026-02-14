@@ -33,7 +33,6 @@
     a{color:inherit;text-decoration:none}
     .wrap{max-width:1200px;margin:0 auto;padding:0 16px}
 
-    /* ---------- Header (smaller) ---------- */
     header{
       position:sticky;top:0;z-index:50;
       border-bottom:1px solid var(--line);
@@ -42,35 +41,18 @@
     }
     .topbar{
       display:flex;align-items:center;justify-content:space-between;
-      padding:10px 0;
-      gap:12px;
+      padding:10px 0; gap:12px;
     }
-    .brand{
-      display:flex;align-items:center;gap:10px;
-      font-weight:900;letter-spacing:.3px;
-      line-height:1;
-    }
+    .brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.3px;line-height:1}
     .logo{
       width:28px;height:28px;border-radius:9px;
       background: linear-gradient(135deg, rgba(106,167,255,.9), rgba(99,255,207,.7));
       box-shadow: 0 8px 24px rgba(0,0,0,.35);
       flex:0 0 auto;
     }
-    .brand small{
-      display:block;
-      margin-top:4px;
-      font-weight:700;
-      color:var(--muted);
-      font-size:11px;
-      letter-spacing:.2px;
-    }
-    nav{
-      display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;
-      font-weight:700;color:var(--muted);
-    }
-    nav a{
-      padding:7px 9px;border-radius:10px;
-    }
+    .brand small{display:block;margin-top:4px;font-weight:700;color:var(--muted);font-size:11px;letter-spacing:.2px}
+    nav{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;font-weight:700;color:var(--muted)}
+    nav a{padding:7px 9px;border-radius:10px}
     nav a.active{
       background: rgba(106,167,255,.14);
       color: var(--text);
@@ -87,12 +69,7 @@
       font-size:12px;
     }
 
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:14px;
-      padding:12px 0 24px;
-    }
+    .grid{display:grid;grid-template-columns:1fr;gap:14px;padding:12px 0 24px}
     .card{
       background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
       border:1px solid var(--line);
@@ -108,31 +85,13 @@
     }
     .cardHead h1{margin:0;font-size:16px;letter-spacing:.2px}
     .sub{font-size:13px;color:var(--muted);margin:6px 0 0}
-    .meta{
-      display:flex;align-items:center;gap:12px;flex-wrap:wrap;
-      color:var(--muted);
-      font-size:13px;
-      font-weight:700;
-    }
-    .pill{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      padding:6px 10px;border-radius:999px;
-    }
-
-    .controls{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:12px 14px;
-      border-bottom:1px solid var(--line);
-      background: rgba(15,23,48,.35);
-      flex-wrap:wrap;
-    }
-    .leftControls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:13px;font-weight:700}
+    .pill{border:1px solid rgba(255,255,255,.12);background: rgba(255,255,255,.05);padding:6px 10px;border-radius:999px}
 
     select, button{
       border-radius:12px;
-      border:1px solid var(--btnbd);
-      background: var(--btnbg);
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.07);
       color: var(--text);
       padding:8px 10px;
       font-weight:900;
@@ -140,8 +99,51 @@
       outline:none;
     }
     select option{background:#0b1020}
-    button:hover{border-color: var(--btnbdHover); background: var(--btnbgHover);}
+    button:hover{border-color: rgba(106,167,255,.35); background: rgba(255,255,255,.10);}
     button:disabled{opacity:.55;cursor:not-allowed}
+
+    /* --- MAP FIRST --- */
+    .mapArea{padding:12px 14px 10px;background: rgba(0,0,0,.06)}
+    .mapWrap{
+      position:relative;
+      display:flex;justify-content:center;align-items:center;
+      border-radius:14px;overflow:hidden;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.02);
+
+      /* KEY: keep whole map viewable */
+      max-height: 72vh;
+    }
+    img{
+      width:100%;
+      height:100%;
+      object-fit: contain;     /* show whole map */
+      display:block;
+    }
+
+    .loading{
+      position:absolute;inset:0;display:none;
+      align-items:center;justify-content:center;gap:10px;
+      background: rgba(11,16,32,.55);
+      backdrop-filter: blur(2px);
+      color: var(--text);
+      font-weight:900;
+    }
+    .loading.on{display:flex}
+    .dot{width:8px;height:8px;border-radius:50%;background: var(--accent);animation:pulse 1s infinite ease-in-out}
+    .dot:nth-child(2){animation-delay:.15s}
+    .dot:nth-child(3){animation-delay:.30s}
+    @keyframes pulse{0%,100%{transform:scale(1);opacity:.55}50%{transform:scale(1.6);opacity:1}}
+
+    /* --- CONTROLS BELOW MAP --- */
+    .controls{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:12px 14px 14px;
+      border-top:1px solid var(--line);
+      background: rgba(15,23,48,.35);
+      flex-wrap:wrap;
+    }
+    .leftControls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 
     .sliderRow{
       display:flex;align-items:center;gap:10px;
@@ -158,36 +160,7 @@
       width: min(820px, 100%);
       accent-color: var(--accent);
     }
-    .periodLabel{
-      font-weight:950;color:var(--text);
-      min-width:150px;
-    }
-
-    .mapArea{padding:12px 14px 16px;background: rgba(0,0,0,.06)}
-    .mapWrap{
-      position:relative;
-      display:flex;justify-content:center;align-items:center;
-      border-radius:14px;overflow:hidden;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.02);
-      min-height: 320px;
-    }
-    img{width:100%;height:auto;display:block}
-
-    .loading{
-      position:absolute;inset:0;display:none;
-      align-items:center;justify-content:center;gap:10px;
-      background: rgba(11,16,32,.55);
-      backdrop-filter: blur(2px);
-      color: var(--text);
-      font-weight:900;letter-spacing:.2px;
-    }
-    .loading.on{display:flex}
-    .dot{width:8px;height:8px;border-radius:50%;background: var(--accent);animation:pulse 1s infinite ease-in-out}
-    .dot:nth-child(2){animation-delay:.15s}
-    .dot:nth-child(3){animation-delay:.30s}
-    @keyframes pulse{0%,100%{transform:scale(1);opacity:.55}50%{transform:scale(1.6);opacity:1}}
-
+    .periodLabel{font-weight:950;min-width:150px}
     footer{
       padding:22px 0 34px;
       color:var(--muted);
@@ -239,6 +212,17 @@
           </div>
         </div>
 
+        <!-- MAP FIRST -->
+        <div class="mapArea">
+          <div class="mapWrap">
+            <div class="loading" id="loadingOverlay">
+              Loading <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            </div>
+            <img id="forecastImage" src="maps/latest_maxt_ndfd.png" alt="Forecast map" />
+          </div>
+        </div>
+
+        <!-- CONTROLS BELOW MAP -->
         <div class="controls">
           <div class="leftControls">
             <label for="varSelect" style="font-weight:950;color:var(--muted)">Variable</label>
@@ -250,8 +234,6 @@
               <option value="snow">Snow (in)</option>
               <option value="wgust">Wind Gust (mph)</option>
             </select>
-
-            <!-- keep Reload as optional; dropdown change auto-loads -->
             <button id="reloadBtn" type="button" title="Reload this product">Reload</button>
           </div>
 
@@ -273,15 +255,6 @@
             </button>
 
             <div class="pill" id="validLocalPill">Valid: —</div>
-          </div>
-        </div>
-
-        <div class="mapArea">
-          <div class="mapWrap">
-            <div class="loading" id="loadingOverlay">
-              Loading <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-            </div>
-            <img id="forecastImage" src="maps/latest_maxt_ndfd.png" alt="Forecast map" />
           </div>
         </div>
       </section>
@@ -316,10 +289,8 @@
 
     function setLoading(on){ els.loading.classList.toggle("on", !!on); }
     function clamp(n, lo, hi){ return Math.max(lo, Math.min(hi, n)); }
-
     function manifestUrl(varName){ return `maps/manifest_${varName}.json`; }
 
-    // IMPORTANT: avoids maps/maps double-prefix
     function frameUrl(frameFile){
       if (!frameFile) return "";
       if (frameFile.startsWith("http")) return frameFile;
@@ -374,7 +345,6 @@
 
       setLoading(true);
       els.img.src = url;
-
       try { if (els.img.decode) await els.img.decode(); } catch (_) {}
       setLoading(false);
 
@@ -408,7 +378,6 @@
       els.validPill.textContent = "Valid: —";
       els.periodLabel.textContent = "Day —";
 
-      // cache-bust the manifest only
       const mUrl = `${manifestUrl(varName)}?t=${Date.now()}`;
 
       try{
@@ -434,7 +403,6 @@
         preloadFrames();
         await showFrame(0);
       } catch(e){
-        // fallback to latest image
         const fallback = `${latestUrl(varName)}?t=${Date.now()}`;
         els.img.src = fallback;
         setEnabled(false);
@@ -442,7 +410,7 @@
       }
     }
 
-    // EVENTS
+    // Events
     els.slider.addEventListener("input", (e) => showFrame(e.target.value));
 
     els.prevBtn.addEventListener("click", () => {
@@ -455,18 +423,15 @@
       showFrame(Number(els.slider.value) + 1);
     });
 
-    // ✅ IMPORTANT CHANGE: dropdown change instantly loads (no reload required)
     els.varSelect.addEventListener("change", () => loadProduct(els.varSelect.value));
     els.reloadBtn.addEventListener("click", () => loadProduct(els.varSelect.value));
 
-    // keyboard arrows
     window.addEventListener("keydown", (e) => {
       if (!manifest?.frames?.length) return;
       if (e.key === "ArrowLeft") els.prevBtn.click();
       if (e.key === "ArrowRight") els.nextBtn.click();
     });
 
-    // initial load
     loadProduct(els.varSelect.value);
   </script>
 </body>
