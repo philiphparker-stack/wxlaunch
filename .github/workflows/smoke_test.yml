@@ -1,0 +1,19 @@
+name: Smoke Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show repo files
+        run: |
+          echo "Repo root:"
+          ls -la
+          echo ""
+          echo "Maps folder (if present):"
+          ls -la maps || true
