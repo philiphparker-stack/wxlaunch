@@ -1,0 +1,391 @@
+<!-- forecasts.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WxLaunch | Forecasts</title>
+
+  <style>
+    :root{
+      --bg:#0b1020;
+      --card:#121a33;
+      --card2:#0f1730;
+      --text:#eaf0ff;
+      --muted:#a9b4d6;
+      --line:rgba(255,255,255,.10);
+      --accent:#6aa7ff;
+      --accent2:#63ffcf;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(106,167,255,.18), transparent 60%),
+                  radial-gradient(1000px 500px at 80% 10%, rgba(99,255,207,.12), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+    }
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:1200px;margin:0 auto;padding:0 16px}
+    header{
+      position:sticky;top:0;z-index:50;
+      border-bottom:1px solid var(--line);
+      background: rgba(11,16,32,.82);
+      backdrop-filter: blur(10px);
+    }
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:12px 0;
+      gap:12px;
+    }
+    .brand{
+      display:flex;align-items:center;gap:10px;
+      font-weight:800;letter-spacing:.4px;
+    }
+    .logo{
+      width:34px;height:34px;border-radius:10px;
+      background: linear-gradient(135deg, rgba(106,167,255,.9), rgba(99,255,207,.7));
+      box-shadow: 0 8px 24px rgba(0,0,0,.35);
+    }
+    nav{
+      display:flex;gap:14px;flex-wrap:wrap;justify-content:flex-end;
+      font-weight:600;color:var(--muted);
+    }
+    nav a{
+      padding:8px 10px;border-radius:10px;
+    }
+    nav a.active{
+      background: rgba(106,167,255,.14);
+      color: var(--text);
+      border:1px solid rgba(106,167,255,.22);
+    }
+    nav a:hover{color:var(--text)}
+
+    .sectionTitle{
+      margin:22px 0 10px;
+      color:var(--muted);
+      font-weight:800;
+      letter-spacing:.3px;
+      text-transform:uppercase;
+      font-size:12px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+      padding:18px 0 24px;
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow: 0 18px 48px rgba(0,0,0,.35);
+      overflow:hidden;
+    }
+    .cardHead{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:14px 14px 10px;
+      border-bottom:1px solid var(--line);
+      background: rgba(18,26,51,.45);
+    }
+    .cardHead h1{
+      margin:0;
+      font-size:16px;
+      letter-spacing:.2px;
+    }
+    .sub{
+      font-size:13px;color:var(--muted);margin:6px 0 0;
+    }
+    .controls{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:12px 14px;
+      border-bottom:1px solid var(--line);
+      background: rgba(15,23,48,.35);
+      flex-wrap:wrap;
+    }
+    .leftControls{
+      display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    }
+    select, button{
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding:8px 10px;
+      font-weight:700;
+      cursor:pointer;
+      outline:none;
+    }
+    select option{background:#0b1020}
+    button:hover{border-color: rgba(106,167,255,.35)}
+    .meta{
+      display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:600;
+    }
+    .pill{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      padding:6px 10px;border-radius:999px;
+    }
+
+    .sliderRow{
+      display:flex;align-items:center;gap:12px;
+      width:100%;
+    }
+    input[type="range"]{
+      width: min(820px, 100%);
+      accent-color: var(--accent);
+    }
+    .sliderLabel{
+      font-weight:800;color:var(--text);
+      min-width:92px;
+      text-align:right;
+    }
+
+    .mapArea{
+      padding:12px 14px 16px;
+      background: rgba(0,0,0,.06);
+    }
+    .mapWrap{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.02);
+      min-height: 320px;
+    }
+    img{
+      width:100%;
+      height:auto;
+      display:block;
+    }
+    .status{
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .status code{
+      color: var(--text);
+      background: rgba(255,255,255,.06);
+      padding:3px 8px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.10);
+    }
+    footer{
+      padding:26px 0 40px;
+      color:var(--muted);
+      font-size:12px;
+      border-top:1px solid var(--line);
+      margin-top:20px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="wrap">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            WxLaunch
+            <div class="sub">Government data only • NWS / NOAA</div>
+          </div>
+        </div>
+
+        <nav aria-label="Primary navigation">
+          <a href="index.html">Home</a>
+          <a href="basics.html">Basics</a>
+          <a href="winter.html">Winter</a>
+          <a href="tropical.html">Tropical</a>
+          <a href="severe.html">Severe</a>
+          <a class="active" href="forecasts.html">Forecasts</a>
+          <a href="soundings.html">Soundings</a>
+          <a href="models.html">Models</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="sectionTitle">Forecasts</div>
+
+    <div class="grid">
+      <section class="card" aria-label="Forecast viewer">
+        <div class="cardHead">
+          <div>
+            <h1 id="forecastTitle">Forecast Viewer</h1>
+            <div class="sub" id="forecastSubtitle">Slider reads <code>maps/manifest_*.json</code> and swaps frames.</div>
+          </div>
+          <div class="meta">
+            <span class="pill" id="frameCountPill">Frames: —</span>
+            <span class="pill" id="generatedAtPill">Updated: —</span>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="leftControls">
+            <label for="varSelect" style="font-weight:800;color:var(--muted)">Variable</label>
+            <select id="varSelect">
+              <option value="maxt">Max Temp (°F)</option>
+              <option value="mint">Min Temp (°F)</option>
+              <option value="dew">Dewpoint (°F)</option>
+              <option value="qpf">QPF (in)</option>
+              <option value="snow">Snow (in)</option>
+              <option value="wgust">Wind Gust (mph)</option>
+            </select>
+
+            <button id="reloadBtn" type="button">Reload</button>
+          </div>
+
+          <div class="sliderRow">
+            <div class="sliderLabel" id="sliderIdxLabel">#0</div>
+            <input type="range" id="forecastSlider" min="0" max="0" step="1" value="0" />
+            <div class="pill" id="validLocalPill">Valid: —</div>
+          </div>
+        </div>
+
+        <div class="mapArea">
+          <div class="mapWrap">
+            <img id="forecastImage" src="maps/latest_maxt_ndfd.png" alt="Forecast map" />
+          </div>
+
+          <div class="status">
+            <div>Manifest: <code id="manifestPath">maps/manifest_maxt.json</code></div>
+            <div>Image: <code id="imagePath">maps/ndfd_maxt_f000.png</code></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      WxLaunch • NWS/NDFD GRIB2 → pygrib → matplotlib/cartopy → PNGs in <code>maps/</code>
+    </div>
+  </footer>
+
+  <script>
+  // -----------------------------
+  // Universal manifest-driven slider
+  // -----------------------------
+  const els = {
+    varSelect: document.getElementById("varSelect"),
+    reloadBtn: document.getElementById("reloadBtn"),
+    title: document.getElementById("forecastTitle"),
+    subtitle: document.getElementById("forecastSubtitle"),
+    frameCount: document.getElementById("frameCountPill"),
+    generatedAt: document.getElementById("generatedAtPill"),
+    slider: document.getElementById("forecastSlider"),
+    idxLabel: document.getElementById("sliderIdxLabel"),
+    validPill: document.getElementById("validLocalPill"),
+    img: document.getElementById("forecastImage"),
+    manifestPath: document.getElementById("manifestPath"),
+    imagePath: document.getElementById("imagePath"),
+  };
+
+  let manifest = null;
+
+  function cacheBust(url) {
+    const sep = url.includes("?") ? "&" : "?";
+    return url + sep + "t=" + Date.now();
+  }
+
+  function manifestUrl(varName) {
+    return `maps/manifest_${varName}.json`;
+  }
+
+  function frameUrl(frameFile) {
+    // frameFile is usually like "ndfd_maxt_f000.png"
+    return `maps/${frameFile}`;
+  }
+
+  function latestUrl(varName) {
+    return `maps/latest_${varName}_ndfd.png`;
+  }
+
+  function setSliderEnabled(on, max = 0) {
+    els.slider.disabled = !on;
+    els.slider.min = 0;
+    els.slider.max = String(Math.max(0, max));
+    els.slider.value = "0";
+  }
+
+  function setStatusDefaults() {
+    els.title.textContent = "Forecast Viewer";
+    els.frameCount.textContent = "Frames: —";
+    els.generatedAt.textContent = "Updated: —";
+    els.idxLabel.textContent = "#—";
+    els.validPill.textContent = "Valid: —";
+  }
+
+  function showFrame(idx) {
+    if (!manifest?.frames?.length) return;
+
+    const i = Math.max(0, Math.min(Number(idx), manifest.frames.length - 1));
+    const fr = manifest.frames[i];
+
+    els.idxLabel.textContent = `#${i}`;
+    els.validPill.textContent = `Valid: ${fr.valid_local || fr.valid_utc || "—"}`;
+
+    const url = frameUrl(fr.file);
+    els.img.src = cacheBust(url);
+    els.imagePath.textContent = url;
+  }
+
+  async function loadProduct(varName) {
+    const mUrl = manifestUrl(varName);
+    els.manifestPath.textContent = mUrl;
+
+    // reset UI quickly so it feels responsive
+    manifest = null;
+    setStatusDefaults();
+    setSliderEnabled(false, 0);
+
+    try {
+      const res = await fetch(cacheBust(mUrl));
+      if (!res.ok) throw new Error(`Manifest missing (${res.status})`);
+      const data = await res.json();
+
+      if (!Array.isArray(data.frames) || data.frames.length === 0) {
+        throw new Error("Manifest has no frames");
+      }
+
+      manifest = data;
+
+      els.title.textContent = data.title || "Forecast Viewer";
+      els.frameCount.textContent = `Frames: ${data.frame_count ?? data.frames.length}`;
+      els.generatedAt.textContent = `Updated: ${data.generated_at_utc || "—"}`;
+
+      setSliderEnabled(true, data.frames.length - 1);
+      showFrame(0);
+    } catch (err) {
+      // No "coming soon" message — just silently show latest image if manifest fails
+      const fallback = latestUrl(varName);
+      els.img.src = cacheBust(fallback);
+      els.imagePath.textContent = fallback;
+      // slider stays disabled
+    }
+  }
+
+  // Events
+  els.slider.addEventListener("input", (e) => showFrame(e.target.value));
+  els.varSelect.addEventListener("change", () => loadProduct(els.varSelect.value));
+  els.reloadBtn.addEventListener("click", () => loadProduct(els.varSelect.value));
+
+  // Initial load
+  loadProduct(els.varSelect.value);
+</script>
+
+</body>
+</html>
