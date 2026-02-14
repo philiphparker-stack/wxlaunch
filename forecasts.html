@@ -1,789 +1,758 @@
+<!-- forecasts.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>WX Launch</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WxLaunch | Forecasts</title>
 
-<!-- Leaflet (Soundings map) -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --text:#eaf0ff;
+      --muted:#a9b4d6;
+      --line:rgba(255,255,255,.10);
+      --accent:#6aa7ff;
+      --good:#63ffcf;
 
-<style>
-  body {
-    margin: 0;
-    padding: 16px;
-    font-family: Arial, Helvetica, sans-serif;
-    background:
-      radial-gradient(1200px 600px at 20% 10%, rgba(40, 110, 160, 0.35), transparent 60%),
-      radial-gradient(900px 500px at 80% 30%, rgba(20, 80, 140, 0.25), transparent 55%),
-      linear-gradient(135deg, #050714 0%, #0a1026 45%, #0b1f3a 100%);
-    color: #ffffff;
-  }
+      --stroke: rgba(255,255,255,.14);
+      --stroke2: rgba(255,255,255,.20);
+      --glass: rgba(11,16,32,.70);
+      --glass2: rgba(15,23,48,.45);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(106,167,255,.18), transparent 60%),
+                  radial-gradient(1000px 500px at 80% 10%, rgba(99,255,207,.12), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+      overflow:hidden; /* one-screen, no page scroll */
+    }
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:1200px;margin:0 auto;padding:0 16px}
 
-  .topbar {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
+    header{
+      position:sticky;top:0;z-index:50;
+      border-bottom:1px solid var(--line);
+      background: rgba(11,16,32,.82);
+      backdrop-filter: blur(10px);
+    }
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:10px 0;
+      gap:12px;
+    }
+    .brand{
+      display:flex;align-items:center;gap:10px;
+      font-weight:900;letter-spacing:.3px;
+      line-height:1;
+    }
+    /* Small logo container (uses your image if present; falls back to gradient) */
+    .logo{
+      width:28px;height:28px;border-radius:9px;
+      background: linear-gradient(135deg, rgba(106,167,255,.9), rgba(99,255,207,.7));
+      box-shadow: 0 8px 24px rgba(0,0,0,.35);
+      flex:0 0 auto;
+      overflow:hidden;
+      display:grid;
+      place-items:center;
+    }
+    .logo img{
+      width:22px;
+      height:22px;
+      object-fit:contain;
+      display:block;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.25));
+    }
 
-  .logo-wrap {
-    width: 100%;
-    max-width: 380px;
-    margin-bottom: 10px;
-  }
-  .logo-wrap img {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
+    .brand small{
+      display:block;
+      margin-top:4px;
+      font-weight:700;
+      color:var(--muted);
+      font-size:11px;
+      letter-spacing:.2px;
+    }
+    nav{
+      display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;
+      font-weight:700;color:var(--muted);
+    }
+    nav a{padding:7px 9px;border-radius:10px}
+    nav a.active{
+      background: rgba(106,167,255,.14);
+      color: var(--text);
+      border:1px solid rgba(106,167,255,.22);
+    }
+    nav a:hover{color:var(--text)}
 
-  .tabs{
-    display:flex;
-    flex-direction: column;
-    gap: 8px;
-    flex-wrap: wrap;
-    justify-content:flex-start;
-  }
+    main{ height: calc(100vh - 56px); }
+    .panel{
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      padding:14px 0;
+    }
 
-  /* ===== TAB GROUPING (NEW) ===== */
-  .tab-group{
-    display:flex;
-    gap:10px;
-    flex-wrap: wrap;
-    justify-content:flex-start;
-  }
+    .card{
+      height:100%;
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow: 0 18px 48px rgba(0,0,0,.35);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      min-height:0;
+    }
 
-  .tab-divider{
-    width: 100%;
-    margin: 4px 0 -2px;
-    font-size: 11px;
-    font-weight: 900;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.55);
-  }
+    /* ===== HEADER (one line on left + updated pill on right) ===== */
+    .cardHead{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:12px 14px;
+      border-bottom:1px solid var(--line);
+      background: rgba(18,26,51,.45);
+      flex: 0 0 auto;
+      min-width:0;
+    }
+    .headLeft{
+      display:flex;
+      align-items:baseline;
+      gap:10px;
+      min-width:0;
+    }
+    .cardHead h1{
+      margin:0;
+      font-size:16px;
+      letter-spacing:.2px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:min(900px, 68vw);
+    }
+    /* Meta line removed per request */
+    .metaInline{ display:none; }
 
-  .tab {
-    border: 1px solid rgba(255,255,255,0.25);
-    background: rgba(13, 91, 120, 0.65);
-    color: #ffffff;
-    font-weight: 700;
-    padding: 8px 16px;
-    cursor: pointer;
-    line-height: 1;
-    appearance: none;
-    backdrop-filter: blur(6px);
-  }
+    .pill{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      padding:6px 10px;border-radius:999px;
+      color: var(--muted);
+      font-weight:900;
+      font-size:13px;
+      white-space:nowrap;
+      flex:0 0 auto;
+    }
 
-  .tab.active {
-    background: rgba(255,255,255,0.95);
-    color: #0b1f3a;
-    border-color: rgba(255,255,255,0.85);
-  }
+    .viewerArea{
+      padding:10px 14px 14px;
+      background: rgba(0,0,0,.06);
+      flex: 1 1 auto;
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
 
-  .panel { display: none; }
-  .panel.active { display: block; }
+    /* ===== VARIABLES ROW ===== */
+    .topControls{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      flex: 0 0 auto;
+    }
+    .label{
+      font-weight:950;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .pillRow{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      min-width:0;
+    }
+    .chip{
+      border-radius:999px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding:6px 9px;
+      font-weight:950;
+      cursor:pointer;
+      user-select:none;
+      line-height:1;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .chip:hover{ border-color: rgba(106,167,255,.35); }
+    .chip[aria-pressed="true"]{
+      background: rgba(106,167,255,.18);
+      border-color: rgba(106,167,255,.42);
+      box-shadow: 0 10px 18px rgba(0,0,0,.18);
+    }
+    .chip .dot{
+      width:8px;height:8px;border-radius:999px;
+      background: rgba(255,255,255,.35);
+      flex:0 0 auto;
+    }
+    .chip[aria-pressed="true"] .dot{ background: rgba(99,255,207,.92); }
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-  }
+    /* ===== TIMELINE BAR (below variables, NOT on image) ===== */
+    .timelineBar{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+      padding:8px 10px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:14px;
+      background: var(--glass2);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 14px 36px rgba(0,0,0,.28);
+      flex: 0 0 auto;
+    }
+    .sliderRow{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      width:100%;
+      flex-wrap:wrap;
+    }
+    .arrowBtn{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:34px;height:28px;padding:0;border-radius:12px;
+      user-select:none;
+      flex: 0 0 auto;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      cursor:pointer;
+    }
+    .arrowBtn:hover{ border-color: rgba(106,167,255,.35); }
+    .arrowBtn:disabled{ opacity:.55; cursor:not-allowed; }
+    .arrowBtn svg{width:18px;height:18px;opacity:.95}
 
-  .tile {
-    background: #fff;
-    border: 1px solid #ccc;
-    display: flex;
-    flex-direction: column;
-    border-radius: 12px;
-    overflow: hidden;
-  }
+    .periodLabel{
+      font-weight:950;
+      min-width:95px;
+      color: var(--text);
+      font-size:13px;
+      flex: 0 0 auto;
+    }
+    input[type="range"]{
+      width: min(900px, 100%);
+      accent-color: var(--accent);
+      flex: 1 1 auto;
+      min-width: 240px;
+    }
+    .pillMini{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      padding:4px 8px;
+      border-radius:999px;
+      color: var(--text);
+      font-weight:900;
+      font-size:11px;
+      white-space:nowrap;
+      flex: 0 0 auto;
+    }
 
-  .tile-content.temp-map {
-    aspect-ratio: 3.5 / 2;
-  }
+    /* ===== MAP VIEWER ===== */
+    #forecastViewer{
+      width: 100%;
+      height: clamp(600px, calc(100vh - 240px), 1100px);
+      border-radius: 14px;
+      border: 1px solid var(--stroke2);
+      background: var(--bg);
+      overflow: hidden;
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+    #viewerStage{
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: var(--bg);
+      cursor: grab;
+    }
+    #viewerStage.dragging{ cursor: grabbing; }
 
-  .tile-content.temp-map{
-    padding: 0;
-    background: #0b1f3a;
-  }
+    #forecastImg{
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* keeps zoom baseline correct */
+      display:block;
+      transform-origin: 0 0;
+      will-change: transform;
+      user-select: none;
+      -webkit-user-drag: none;
+      pointer-events: none;
+    }
 
-  .tile-content.temp-map img{
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: block;
-  }
+    .viewer-overlay{
+      position: absolute;
+      inset: 0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 950;
+      color: rgba(255,255,255,0.95);
+      background: rgba(0,0,0,0.26);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease;
+      z-index: 30;
+    }
+    .viewer-overlay.show{ opacity: 1; }
 
-  .tile.clickable { cursor: pointer; }
-  .tile.clickable:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 10px 18px rgba(0,0,0,0.18);
-    transition: 0.12s ease;
-  }
+    /* ===== ZOOM CONTROLS ON MAP (top-left) ===== */
+    .mapTools{
+      position:absolute;
+      top:10px;
+      left:10px;
+      z-index: 25;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 8px;
+      border-radius:14px;
+      background: rgba(11,16,32,.55);
+      border:1px solid rgba(255,255,255,.14);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 16px 34px rgba(0,0,0,.30);
+    }
+    .toolBtn{
+      width:34px;height:30px;
+      border-radius:12px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      font-weight:950;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      user-select:none;
+    }
+    .toolBtn:hover{ border-color: rgba(106,167,255,.35); }
+    .toolReset{
+      padding:0 10px;
+      height:30px;
+      width:auto;
+      border-radius:12px;
+    }
+    .toolHint{
+      color: var(--muted);
+      font-weight:850;
+      font-size:12px;
+      white-space:nowrap;
+      margin-left:4px;
+    }
 
-  .tile-header{
-    padding: 6px 8px;
-    font-weight: 700;
-    border-bottom: 1px solid #d7dbe2;
-    background: rgba(255,255,255,0.92);
-    color: #0b1f3a;
-    font-size: 12px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .tile-content {
-    aspect-ratio: 16 / 9;
-    padding: 3px;
-    overflow: hidden;
-    background: #fff;
-  }
-
-  .tile-content img {
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-  }
-
-  .header-glass {
-    padding: 18px 20px;
-    border-radius: 14px;
-    background: linear-gradient(
-      180deg,
-      rgba(20, 90, 150, 0.45),
-      rgba(10, 45, 85, 0.35)
-    );
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow:
-      0 10px 30px rgba(0, 0, 0, 0.35),
-      inset 0 1px 0 rgba(255, 255, 255, 0.15);
-    margin-bottom: 22px;
-  }
-
-  /* ===== SOUNDINGS TAB ===== */
-  .soundings-wrap{
-    display: grid;
-    grid-template-columns: 0.9fr 1.3fr;
-    gap: 12px;
-    align-items: start;
-  }
-
-  #soundingMap{
-    height: 500px;
-    border: 1px solid rgba(255,255,255,0.25);
-    border-radius: 12px;
-    overflow: hidden;
-    background: rgba(255,255,255,0.06);
-  }
-
-  #soundingViewer{
-    width: 100%;
-    height: 600px;
-    border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.25);
-    background: #ffffff;
-    overflow: hidden;
-    position: relative;
-  }
-
-  #viewerStage{
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    background: #ffffff;
-    cursor: default;
-  }
-
-  #soundingImg{
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display:block;
-    transform-origin: 0 0;
-    will-change: transform;
-    user-select: none;
-    -webkit-user-drag: none;
-    pointer-events: none;
-  }
-
-  .sounding-overlay {
-    position: absolute;
-    inset: 0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight: 700;
-    color: rgba(255,255,255,0.95);
-    background: rgba(0,0,0,0.25);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.15s ease;
-    z-index: 5;
-  }
-  .sounding-overlay.show { opacity: 1; }
-
-  .sounding-meta{
-    margin-top: 8px;
-    font-size: 12px;
-    opacity: 0.9;
-  }
-
-  .tiny-note {
-    margin-top: 6px;
-    font-size: 11px;
-    opacity: 0.7;
-  }
-
-  .viewer-controls{
-    position: absolute;
-    right: 14px;
-    top: 54px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    z-index: 10;
-  }
-  .vc-btn{
-    width: 54px;
-    height: 54px;
-    border-radius: 14px;
-    border: none;
-    cursor: pointer;
-    background: rgba(10, 25, 45, 0.92);
-    color: #fff;
-    font-size: 26px;
-    font-weight: 800;
-    line-height: 54px;
-    text-align: center;
-    box-shadow: 0 10px 18px rgba(0,0,0,0.25);
-  }
-  .vc-btn:active{ transform: translateY(1px); }
-  .vc-btn.small{ font-size: 22px; }
-
-  @media (max-width: 980px) {
-    .grid { grid-template-columns: repeat(2, 1fr); }
-    .soundings-wrap { grid-template-columns: 1fr; }
-    #soundingMap { height: 420px; }
-    #soundingViewer { height: 520px; }
-    .viewer-controls{ top: 46px; }
-  }
-</style>
+    @media (max-width: 860px){
+      #forecastViewer{ height: clamp(600px, calc(100vh - 285px), 1100px); }
+      .toolHint{ display:none; }
+      .cardHead h1{ max-width: 70vw; }
+      input[type="range"]{ min-width: 200px; }
+    }
+  </style>
 </head>
 
 <body>
-
-<div class="header-glass">
-  <div class="topbar">
-    <div class="logo-wrap">
-      <img src="wxlaunch-logo.png" alt="WXLaunch Logo">
-    </div>
-
-    <!-- UPDATED TABS: Analysis section grouping -->
-    <div class="tabs">
-
-      <div class="tab-group">
-        <button class="tab active" type="button" data-target="basics">Basics</button>
-        <button class="tab" type="button" data-target="severe">Severe Weather</button>
-        <button class="tab" type="button" data-target="tropical">Tropical Weather</button>
-        <button class="tab" type="button" data-target="winter">Winter Weather</button>
-      </div>
-
-      <div class="tab-divider">Analysis &amp; Guidance</div>
-
-      <div class="tab-group">
-        <button class="tab" type="button" data-target="forecasts">Forecasts</button>
-        <button class="tab" type="button" data-target="models">Models</button>
-        <button class="tab" type="button" data-target="soundings">Soundings</button>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<!-- WINTER -->
-<div class="panel" id="winter">
-  <div class="grid">
-    <div class="tile" data-href="https://www.spia-index.com/WDP-files/SC_total_ice04.png">
-      <div class="tile-header">Ice Accumulation</div>
-      <div class="tile-content">
-        <img src="https://www.spia-index.com/WDP-files/SC_total_ice04.png" alt="Ice Accumulation">
-      </div>
-    </div>
-    <div class="tile"><div class="tile-header">Snowfall</div><div class="tile-content"><img src="https://www.spia-index.com/WDP-files/SC_total_ice04.png" alt="Snowfall"></div></div>
-    <div class="tile"><div class="tile-header">Freeze Line</div><div class="tile-content"><img src="https://www.spia-index.com/WDP-files/SC_total_ice04.png" alt="Freeze Line"></div></div>
-    <div class="tile"><div class="tile-header">Surface Temps</div><div class="tile-content"><img src="https://www.spia-index.com/WDP-files/SC_total_ice04.png" alt="Surface Temps"></div></div>
-
-    <div class="tile"><div class="tile-header">850mb Temps</div><div class="tile-content"></div></div>
-    <div class="tile"><div class="tile-header">Thickness</div><div class="tile-content"></div></div>
-    <div class="tile"><div class="tile-header">Snow Ratio</div><div class="tile-content"></div></div>
-    <div class="tile"><div class="tile-header">Model Blend</div><div class="tile-content"></div></div>
-  </div>
-</div>
-
-<!-- TROPICAL -->
-<div class="panel" id="tropical">
-  <div class="grid">
-    <div class="tile"><div class="tile-header">Atlantic Overview</div><div class="tile-content"><img src="https://www.nhc.noaa.gov/overview_atl/tafb_atl_graphics.png" alt="Atlantic Overview"></div></div>
-    <div class="tile"><div class="tile-header">Pacific Overview</div><div class="tile-content"><img src="https://www.nhc.noaa.gov/overview_epac/tafb_epac_graphics.png" alt="Pacific Outlook"></div></div>
-
-    <div class="tile"><div class="tile-header">Atlantic Visible Geo-Color</div><div class="tile-content"><img src="https://cdn.star.nesdis.noaa.gov/GOES19/ABI/SECTOR/taw/GEOCOLOR/GOES19-TAW-GEOCOLOR-900x540.gif" alt="Atlantic GeoColor"></div></div>
-    <div class="tile"><div class="tile-header">Gulf of America Geo-Color</div><div class="tile-content"><img src="https://cdn.star.nesdis.noaa.gov/GOES19/ABI/SECTOR/ga/GEOCOLOR/GOES19-GA-GEOCOLOR-1000x1000.gif" alt="Gulf GeoColor"></div></div>
-    <div class="tile"><div class="tile-header">Eastern US Floater Geo-Color</div><div class="tile-content"><img src="https://cdn.star.nesdis.noaa.gov/GOES19/ABI/SECTOR/eus/GEOCOLOR/GOES19-EUS-GEOCOLOR-1000x1000.gif" alt="EUS GeoColor"></div></div>
-
-    <div class="tile"><div class="tile-header">Atlantic Water Vapor</div><div class="tile-content"><img src="https://cdn.star.nesdis.noaa.gov/GOES19/ABI/SECTOR/taw/08/GOES19-TAW-08-900x540.gif" alt="Atlantic Water Vapor"></div></div>
-    <div class="tile"><div class="tile-header">Gulf of America Water Vapor</div><div class="tile-content"><img src="https://cdn.star.nesdis.noaa.gov/GOES19/ABI/SECTOR/ga/08/GOES19-GA-08-1000x1000.gif" alt="Gulf Water Vapor"></div></div>
-    <div class="tile"><div class="tile-header">Eastern US Water Vapor</div><div class="tile-content"><img src="https://cdn.star.nesdis.noaa.gov/GOES19/ABI/SECTOR/eus/08/GOES19-EUS-08-1000x1000.gif" alt="EUS Water Vapor"></div></div>
-
-    <div class="tile"><div class="tile-header">Ocean Heat Content</div><div class="tile-content"><img src="https://www.ospo.noaa.gov/Visualization01/cData/Blended/OHC/NATL/OHC-PNG/OHC-PNG_NATL_20260202.png" alt="OHC"></div></div>
-    <div class="tile"><div class="tile-header">Sea Surface Temps</div><div class="tile-content"><img src="https://www.ospo.noaa.gov/Visualization01/cData/Blended/OHC/NATL/SST-PNG/SST-PNG_NATL_20260202.png" alt="SST"></div></div>
-    <div class="tile"><div class="tile-header">24 Hour Pressure Change</div><div class="tile-content"><img src="https://www.nhc.noaa.gov/tafb_latest/atl_pfall.png" alt="Pressure Change"></div></div>
-    <div class="tile"><div class="tile-header">Generalized Wind Shear (0-24hr)</div><div class="tile-content"><img src="https://www.ospo.noaa.gov/Visualization01/cData/Ocean/Tropical/TCFP/images/al_rVSHD_024.png" alt="Shear"></div></div>
-  </div>
-</div>
-
-<!-- BASICS -->
-<div class="panel active" id="basics">
-  <div class="grid">
-
-    <div class="tile">
-      <div class="tile-header">Current Temps</div>
-      <div class="tile-content temp-map">
-        <img src="/latest_maxt_ndfd.png" alt="NDFD Max Temp" style="max-width:100%;height:auto;border-radius:12px;">
-      </div>
-    </div>
-
-    <div class="tile">
-      <div class="tile-header">Forecast Map</div>
-      <div class="tile-content">
-        <img src="/maps/latest_dewpoint_ndfd.png" alt="Dewpoint">
-      </div>
-    </div>
-
-    <div class="tile">
-      <div class="tile-header">24hr Surface</div>
-      <div class="tile-content">
-        <img src="/maps/latest_wind_ndfd.png" alt="Wind">
-      </div>
-    </div>
-
-    <div class="tile">
-      <div class="tile-header">CONUS Radar Mosaic</div>
-      <div class="tile-content">
-        <img src="https://radar.weather.gov/ridge/standard/CONUS-LARGE_loop.gif" alt="CONUS Radar">
-      </div>
-    </div>
-
-    <div class="tile">
-      <div class="tile-header">Real-Time Weather Alerts Map</div>
-      <div class="tile-content">
-        <img src="https://www.weather.gov/wwamap/png/US.png" alt="Valid WW">
-      </div>
-    </div>
-
-    <div class="tile">
-      <div class="tile-header">National QPF- 1 Day</div>
-      <div class="tile-content">
-        <img src="https://www.wpc.ncep.noaa.gov/qpf/fill_94qwbg.gif" alt="QPF 1 Day">
-      </div>
-    </div>
-
-    <div class="tile">
-      <div class="tile-header">National QPF- 1-3 Day</div>
-      <div class="tile-content">
-        <img src="https://www.wpc.ncep.noaa.gov/qpf/d13_fill.gif" alt="QPF 1-3 Day">
-      </div>
-    </div>
-
-    <div class="tile">
-      <div class="tile-header">QPF 6-7 Day</div>
-      <div class="tile-content">
-        <img src="https://www.wpc.ncep.noaa.gov/qpf/97ep48iwbg_fill.gif?1770436547" alt="QPF Day 6-7">
-      </div>
-    </div>
-
-    <div class="tile">
-      <div class="tile-header">National Wind Speeds</div>
-      <div class="tile-content">
-        <img src="https://graphical.weather.gov/images/conus/WindSpd4_conus.png" alt="Wind Speed Map">
-      </div>
-    </div>
-
-    <div class="tile">
-      <div class="tile-header">Temp Departure</div>
-      <div class="tile-content">
-        <img src="https://www.weather.gov/images/erh/gis/CONUS_maxt_dep.png" alt="Temp Departure">
-      </div>
-    </div>
-
-    <div class="tile">
-      <div class="tile-header">Fire Potential Outlook</div>
-      <div class="tile-content">
-        <img src="https://www.nifc.gov/nicc-files/predictive/outlooks/month1_outlook.png" alt="Fire Outlook">
-      </div>
-    </div>
-
-    <div class="tile">
-      <div class="tile-header">Drought Monitor</div>
-      <div class="tile-content">
-        <img src="https://droughtmonitor.unl.edu/data/png/current/current_usdm.png" alt="US Drought Monitor">
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- FORECASTS (placeholder panel in index; you can wire later) -->
-<div class="panel" id="forecasts">
-  <div class="grid">
-    <div class="tile">
-      <div class="tile-header">Forecasts Page</div>
-      <div class="tile-content">
-        <img src="https://via.placeholder.com/800x450?text=Go+to+forecasts.html" alt="Forecasts">
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- SEVERE -->
-<div class="panel" id="severe">
-  <div class="grid">
-    <div class="tile"><div class="tile-header">SPC Activity</div><div class="tile-content"><img src="https://www.spc.noaa.gov/products/activity_loop.gif" alt="SPC Activity"></div></div>
-    <div class="tile"><div class="tile-header">Day 1 Outlook</div><div class="tile-content"><img src="https://www.spc.noaa.gov/products/outlook/day1otlk_1630.gif" alt="Day 1 Outlook"></div></div>
-    <div class="tile"><div class="tile-header">Day 2 Outlook</div><div class="tile-content"><img src="https://www.spc.noaa.gov/products/outlook/day2otlk_0700.gif" alt="Day 2 Outlook"></div></div>
-    <div class="tile"><div class="tile-header">Day 3 Outlook</div><div class="tile-content"><img src="https://www.spc.noaa.gov/products/outlook/day3otlk_0830.gif" alt="Day 3 Outlook"></div></div>
-
-    <div class="tile"><div class="tile-header">Full Radar Mosaic</div><div class="tile-content"><img src="https://via.placeholder.com/800x450?text=Radar+Mosaic" alt="Radar Mosaic"></div></div>
-    <div class="tile"><div class="tile-header">GOES East Satellite</div><div class="tile-content"><img src="https://via.placeholder.com/800x450?text=GOES+East" alt="GOES East"></div></div>
-    <div class="tile"><div class="tile-header">Mesoanalysis</div><div class="tile-content"><img src="https://via.placeholder.com/800x450?text=Mesoanalysis" alt="Mesoanalysis"></div></div>
-    <div class="tile"><div class="tile-header">Storm Reports</div><div class="tile-content"><img src="https://via.placeholder.com/800x450?text=Storm+Reports" alt="Storm Reports"></div></div>
-  </div>
-</div>
-
-<!-- MODELS -->
-<div class="panel" id="models">
-  <div class="grid">
-    <div class="tile"><div class="tile-header">GFS (CONUS)</div><div class="tile-content"><img src="https://via.placeholder.com/800x450?text=GFS+CONUS" alt="GFS"></div></div>
-    <div class="tile"><div class="tile-header">Euro (ECMWF)</div><div class="tile-content"><img src="https://via.placeholder.com/800x450?text=ECMWF" alt="ECMWF"></div></div>
-    <div class="tile"><div class="tile-header">NAM</div><div class="tile-content"><img src="https://via.placeholder.com/800x450?text=NAM" alt="NAM"></div></div>
-    <div class="tile"><div class="tile-header">HRRR</div><div class="tile-content"><img src="https://via.placeholder.com/800x450?text=HRRR" alt="HRRR"></div></div>
-  </div>
-</div>
-
-<!-- SOUNDINGS -->
-<div class="panel" id="soundings">
-  <div class="soundings-wrap">
-    <div>
-      <div class="tile-header">Click a station</div>
-      <div id="soundingMap"></div>
-      <div class="sounding-meta" id="soundingMeta"></div>
-      <div class="tiny-note">Source: SPC Experimental Soundings (OBS). If the newest cycle isn’t posted yet, it auto-falls back.</div>
-    </div>
-
-    <div>
-      <div class="tile-header">Sounding Viewer</div>
-      <div id="soundingViewer">
-        <div id="viewerStage">
-          <img id="soundingImg" alt="Sounding will load here">
-          <div class="sounding-overlay" id="soundingOverlay">Loading…</div>
+  <header>
+    <div class="wrap">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo" aria-hidden="true">
+            <!-- Put your logo file here (recommended path): assets/logo.png -->
+            <img id="brandLogo" src="assets/logo.png" alt="" />
+          </div>
+          <div>
+            WxLaunch
+            <small>NWS Forecasting Data</small>
+          </div>
         </div>
 
-        <div class="viewer-controls" aria-label="Viewer controls">
-          <button class="vc-btn" id="zoomInBtn" type="button" title="Zoom in">+</button>
-          <button class="vc-btn" id="zoomOutBtn" type="button" title="Zoom out">−</button>
-          <button class="vc-btn small" id="resetBtn" type="button" title="Reset view">↺</button>
-        </div>
+        <nav aria-label="Primary navigation">
+          <a href="index.html">Home</a>
+          <a href="basics.html">Basics</a>
+          <a href="winter.html">Winter</a>
+          <a href="tropical.html">Tropical</a>
+          <a href="severe.html">Severe</a>
+          <a class="active" href="forecasts.html">Forecasts</a>
+          <a href="soundings.html">Soundings</a>
+          <a href="models.html">Models</a>
+        </nav>
       </div>
     </div>
-  </div>
-</div>
+  </header>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
+  <main class="wrap">
+    <div class="panel">
+      <section class="card" aria-label="Forecast viewer">
+        <div class="cardHead">
+          <div class="headLeft">
+            <h1 id="forecastTitle">Forecast Viewer</h1>
+            <div class="metaInline" id="forecastMeta">NWS/NDFD • —</div>
+          </div>
+          <div class="pill" id="generatedAtPill">Updated: —</div>
+        </div>
 
-  // -----------------------------------
-  // Helpers
-  // -----------------------------------
-  function dmToDecimal(deg, min, hemi) {
-    let val = Number(deg) + Number(min) / 60;
-    if (hemi === "S" || hemi === "W") val *= -1;
-    return val;
-  }
+        <div class="viewerArea">
+          <!-- Variables row -->
+          <div class="topControls">
+            <span class="label">Variables</span>
+            <div class="pillRow" id="pillRow" aria-label="Variable toggles"></div>
+          </div>
 
-  function showOverlay(on) {
-    const ov = document.getElementById("soundingOverlay");
-    if (!ov) return;
-    ov.classList.toggle("show", !!on);
-  }
+          <!-- Timeline row (below variables, not on image) -->
+          <div class="timelineBar" aria-label="Timeline controls">
+            <div class="sliderRow">
+              <button class="arrowBtn" id="prevBtn" type="button" aria-label="Previous">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
 
-  // -----------------------------------
-  // Tabs (panel switching)
-  // -----------------------------------
-  const tabs = document.querySelectorAll(".tab");
-  const panels = document.querySelectorAll(".panel");
+              <div class="periodLabel" id="periodLabel">Day —</div>
 
-  function activate(targetId) {
-    tabs.forEach(t => t.classList.toggle("active", t.dataset.target === targetId));
-    panels.forEach(p => p.classList.toggle("active", p.id === targetId));
+              <input type="range" id="forecastSlider" min="0" max="0" step="1" value="0" />
 
-    if (targetId === "soundings" && window._sMap) {
-      setTimeout(() => window._sMap.invalidateSize(), 80);
-    }
-  }
+              <button class="arrowBtn" id="nextBtn" type="button" aria-label="Next">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
 
-  tabs.forEach(tab => tab.addEventListener("click", () => activate(tab.dataset.target)));
+              <div class="pillMini" id="validLocalPill">Valid: —</div>
+            </div>
+          </div>
 
-  // Make any tile with an <img> clickable (opens image in new tab)
-  document.addEventListener("click", (e) => {
-    if (e.target.closest(".tabs")) return;
-    const tile = e.target.closest(".tile");
-    if (!tile) return;
-    const explicit = tile.getAttribute("data-href");
-    const img = tile.querySelector(".tile-content img");
-    const url = explicit || (img ? img.getAttribute("src") : null);
-    if (!url) return;
-    window.open(url, "_blank", "noopener");
-  });
+          <!-- Map viewer (zoom controls live on the map) -->
+          <div id="forecastViewer">
+            <div class="viewer-overlay" id="viewerOverlay">Loading…</div>
 
-  document.querySelectorAll(".tile").forEach(tile => {
-    const hasDataHref = tile.hasAttribute("data-href");
-    const hasImg = !!tile.querySelector(".tile-content img");
-    if (hasDataHref || hasImg) tile.classList.add("clickable");
-  });
+            <div class="mapTools" aria-label="Map tools">
+              <button class="toolBtn" id="zoomOutBtn" type="button" title="Zoom out">−</button>
+              <button class="toolBtn" id="zoomInBtn" type="button" title="Zoom in">+</button>
+              <button class="toolBtn toolReset" id="resetViewBtn" type="button" title="Reset view">Reset</button>
+              <span class="toolHint">Wheel to zoom • Drag to pan</span>
+            </div>
 
-  // -----------------------------------
-  // Viewer Pan/Zoom
-  // -----------------------------------
-  const stage = document.getElementById("viewerStage");
-  const img   = document.getElementById("soundingImg");
+            <div id="viewerStage">
+              <img id="forecastImg" src="maps/latest_maxt_ndfd.png" alt="Forecast map" />
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
 
-  let vScale = 1;
-  let vX = 0;
-  let vY = 0;
+  <script>
+    // ----------------------------
+    // Forecast viewer
+    // - Keep zoom/pan state when switching frames/variables
+    // - Reset only when user clicks Reset
+    // ----------------------------
 
-  function applyView() {
-    if (!img) return;
-    img.style.transform = `translate(${vX}px, ${vY}px) scale(${vScale})`;
-  }
+    const VARS = [
+      { key:"maxt",  label:"Max Temp (°F)" },
+      { key:"mint",  label:"Min Temp (°F)" },
+      { key:"dew",   label:"Dewpoint (°F)" },
+      { key:"qpf",   label:"QPF (in)" },
+      { key:"snow",  label:"Snow (in)" },
+      { key:"wgust", label:"Wind Gust (mph)" },
+    ];
 
-  function resetViewer() {
-    vScale = 1;
-    vX = 0;
-    vY = 0;
-    applyView();
-  }
+    const els = {
+      pillRow: document.getElementById("pillRow"),
+      title: document.getElementById("forecastTitle"),
+      updated: document.getElementById("generatedAtPill"),
 
-  function zoomAt(factor) {
-    if (!stage) return;
-    const rect = stage.getBoundingClientRect();
-    const cx = rect.width / 2;
-    const cy = rect.height / 2;
+      slider: document.getElementById("forecastSlider"),
+      periodLabel: document.getElementById("periodLabel"),
+      validPill: document.getElementById("validLocalPill"),
+      prevBtn: document.getElementById("prevBtn"),
+      nextBtn: document.getElementById("nextBtn"),
 
-    const ix = (cx - vX) / vScale;
-    const iy = (cy - vY) / vScale;
+      stage: document.getElementById("viewerStage"),
+      img: document.getElementById("forecastImg"),
+      overlay: document.getElementById("viewerOverlay"),
 
-    vScale = Math.min(6, Math.max(0.5, vScale * factor));
-    vX = cx - ix * vScale;
-    vY = cy - iy * vScale;
+      zoomIn: document.getElementById("zoomInBtn"),
+      zoomOut: document.getElementById("zoomOutBtn"),
+      resetView: document.getElementById("resetViewBtn"),
 
-    applyView();
-  }
-
-  document.getElementById("zoomInBtn")?.addEventListener("click", () => zoomAt(1.25));
-  document.getElementById("zoomOutBtn")?.addEventListener("click", () => zoomAt(0.8));
-  document.getElementById("resetBtn")?.addEventListener("click", resetViewer);
-
-  let dragging = false;
-  let startX = 0, startY = 0;
-  let startVX = 0, startVY = 0;
-
-  stage?.addEventListener("mousedown", (e) => {
-    dragging = true;
-    startX = e.clientX;
-    startY = e.clientY;
-    startVX = vX;
-    startVY = vY;
-    stage.style.cursor = "grabbing";
-  });
-
-  window.addEventListener("mousemove", (e) => {
-    if (!dragging) return;
-    vX = startVX + (e.clientX - startX);
-    vY = startVY + (e.clientY - startY);
-    applyView();
-  });
-
-  window.addEventListener("mouseup", () => {
-    dragging = false;
-    if (stage) stage.style.cursor = "default";
-  });
-
-  stage?.addEventListener("wheel", (e) => {
-    e.preventDefault();
-    const factor = (e.deltaY < 0) ? 1.15 : 0.87;
-    zoomAt(factor);
-  }, { passive: false });
-
-  // -----------------------------------
-  // SOUNDINGS (SPC Experimental Soundings)
-  // -----------------------------------
-  const SPC_CONUS_IDS = [
-    "UIL","OTX","TFX","GGW","BOI","SLE","MFR","REV","LKN","SLC","RIW","UNR","BIS","INL",
-    "ABR","MPX","GRB","APX","DTX","ILX","DVN","OAX","TOP","LBF","DDC","AMA","OUN","SGF",
-    "LZK","SHV","FWD","CRP","BRO","DRT","MAF","EPZ","TUS","ABQ","FGZ","VEF","EDW","VBG",
-    "NKX","LCH","LIX","JAN","BMX","FFC","BNA","ILN","PIT","BUF","ALB","OKX","CHH","IAD",
-    "WAL","RNK","GSO","MHX","CHS","TLH","JAX","TBW","MFL","EYW"
-  ];
-
-  const pad2 = (n) => String(n).padStart(2,"0");
-
-  function spcFolderStamp(dtUTC) {
-    const yy = String(dtUTC.getUTCFullYear()).slice(-2);
-    const mm = pad2(dtUTC.getUTCMonth() + 1);
-    const dd = pad2(dtUTC.getUTCDate());
-    const hh = pad2(dtUTC.getUTCHours());
-    return `${yy}${mm}${dd}${hh}`;
-  }
-
-  function guessLatestSynopticUTC() {
-    const now = new Date();
-    const utcHour = now.getUTCHours();
-    const targetHour = (utcHour >= 15) ? 12 : 0;
-    return new Date(Date.UTC(
-      now.getUTCFullYear(),
-      now.getUTCMonth(),
-      now.getUTCDate(),
-      targetHour, 0, 0
-    ));
-  }
-
-  function fmtUTC(dt) {
-    const y = dt.getUTCFullYear();
-    const m = pad2(dt.getUTCMonth() + 1);
-    const d = pad2(dt.getUTCDate());
-    const hh = pad2(dt.getUTCHours());
-    return `${y}-${m}-${d} ${hh}Z`;
-  }
-
-  function buildSpcObsUrl(stid, dtUTC) {
-    const folder = `${spcFolderStamp(dtUTC)}_OBS`;
-    return `https://www.spc.noaa.gov/exper/soundings/${folder}/${stid}.gif`;
-  }
-
-  async function loadSpcStationsFromStationsTxt() {
-    const res = await fetch("stations.txt", { cache: "no-store" });
-    if (!res.ok) throw new Error(`Could not fetch stations.txt (${res.status}). Use Live Server / http(s)://`);
-
-    const text = await res.text();
-    const lines = text.split("\n");
-    const wanted = new Set(SPC_CONUS_IDS);
-    const out = [];
-
-    for (const raw of lines) {
-      const line = raw.trim();
-      if (!line || line.startsWith("!")) continue;
-
-      const m = line.match(/\bK([A-Z0-9]{3})\s+([A-Z0-9]{3})\s+(\d{5})\s+(\d{2})\s+(\d{2})([NS])\s+(\d{3})\s+(\d{2})([EW])\b/);
-      if (!m) continue;
-
-      const stid = m[2];
-      if (!wanted.has(stid)) continue;
-
-      const lat = dmToDecimal(m[4], m[5], m[6]);
-      const lon = dmToDecimal(m[7], m[8], m[9]);
-
-      out.push({ id: stid, name: stid, lat, lon });
-    }
-
-    const uniq = new Map();
-    out.forEach(s => uniq.set(s.id, s));
-    return Array.from(uniq.values());
-  }
-
-  function setSounding(station) {
-    const meta = document.getElementById("soundingMeta");
-    if (!img || !meta) return;
-
-    resetViewer();
-
-    const base = guessLatestSynopticUTC();
-    const tries = [0, -12, -24, -36].map(h => {
-      const dt = new Date(base.getTime() + h * 3600 * 1000);
-      return { dt, url: buildSpcObsUrl(station.id, dt) + `?v=${Date.now()}` };
-    });
-
-    let i = 0;
-    showOverlay(true);
-    meta.textContent = `${station.id} — ${fmtUTC(tries[0].dt)} (trying…)`;
-
-    img.onload = null;
-    img.onerror = null;
-
-    const tryLoad = () => {
-      const t = tries[i];
-      meta.textContent = `${station.id} — ${fmtUTC(t.dt)}${i ? " (fallback)" : ""}`;
-
-      img.onload = () => showOverlay(false);
-      img.onerror = () => {
-        i++;
-        if (i < tries.length) tryLoad();
-        else {
-          showOverlay(false);
-          meta.textContent = `${station.id} — could not load latest SPC OBS image (try again later).`;
-          img.removeAttribute("src");
-        }
-      };
-
-      img.src = t.url;
+      brandLogo: document.getElementById("brandLogo"),
     };
 
-    tryLoad();
-  }
+    // Logo fallback: if assets/logo.png doesn't exist, keep the gradient tile.
+    els.brandLogo.addEventListener("error", () => {
+      els.brandLogo.remove();
+    });
 
-  const mapEl = document.getElementById("soundingMap");
-  if (mapEl && !window._sMap) {
-    const map = L.map("soundingMap", { zoomControl: true }).setView([37.5, -96], 4);
-    window._sMap = map;
+    let selectedVar = "maxt";
+    let manifest = null;
+    let cacheKey = "";
+    const preloaded = new Map();
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 10,
-      attribution: "© OpenStreetMap"
-    }).addTo(map);
+    // ===== Viewer state =====
+    const viewer = {
+      scale: 1,
+      minScale: 1,
+      maxScale: 5,
+      x: 0,
+      y: 0,
+      dragging: false,
+      dragStartX: 0,
+      dragStartY: 0,
+      startX: 0,
+      startY: 0,
+    };
 
-    loadSpcStationsFromStationsTxt()
-      .then(stations => {
-        stations.forEach(st => {
-          const marker = L.circleMarker([st.lat, st.lon], {
-            radius: 5,
-            color: "#00e5ff",
-            fillColor: "#00e5ff",
-            fillOpacity: 0.85,
-            weight: 1
-          }).addTo(map);
+    function clamp(n, lo, hi){ return Math.max(lo, Math.min(hi, n)); }
 
-          marker.bindTooltip(st.id, { direction: "top" });
-          marker.on("click", () => setSounding(st));
+    function setLoading(on){
+      els.overlay.classList.toggle("show", !!on);
+    }
+
+    function applyTransform(){
+      els.img.style.transform = `translate(${viewer.x}px, ${viewer.y}px) scale(${viewer.scale})`;
+    }
+
+    function resetView(){
+      viewer.scale = 1;
+      viewer.x = 0;
+      viewer.y = 0;
+      applyTransform();
+    }
+
+    function zoomAt(newScale, clientX, clientY){
+      const prev = viewer.scale;
+      viewer.scale = clamp(newScale, viewer.minScale, viewer.maxScale);
+
+      const rect = els.stage.getBoundingClientRect();
+      const px = clientX - rect.left;
+      const py = clientY - rect.top;
+
+      const wx = (px - viewer.x) / prev;
+      const wy = (py - viewer.y) / prev;
+
+      viewer.x = px - wx * viewer.scale;
+      viewer.y = py - wy * viewer.scale;
+
+      applyTransform();
+    }
+
+    // Wheel zoom
+    els.stage.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      const step = (e.deltaY < 0) ? 0.18 : -0.18;
+      zoomAt(viewer.scale + step, e.clientX, e.clientY);
+    }, { passive:false });
+
+    // Drag pan
+    els.stage.addEventListener("mousedown", (e) => {
+      viewer.dragging = true;
+      els.stage.classList.add("dragging");
+      viewer.dragStartX = e.clientX;
+      viewer.dragStartY = e.clientY;
+      viewer.startX = viewer.x;
+      viewer.startY = viewer.y;
+    });
+
+    window.addEventListener("mouseup", () => {
+      viewer.dragging = false;
+      els.stage.classList.remove("dragging");
+    });
+
+    window.addEventListener("mousemove", (e) => {
+      if (!viewer.dragging) return;
+      const dx = e.clientX - viewer.dragStartX;
+      const dy = e.clientY - viewer.dragStartY;
+      viewer.x = viewer.startX + dx;
+      viewer.y = viewer.startY + dy;
+      applyTransform();
+    });
+
+    // Buttons
+    els.zoomIn.addEventListener("click", () => {
+      const r = els.stage.getBoundingClientRect();
+      zoomAt(viewer.scale + 0.35, r.left + r.width/2, r.top + r.height/2);
+    });
+    els.zoomOut.addEventListener("click", () => {
+      const r = els.stage.getBoundingClientRect();
+      zoomAt(viewer.scale - 0.35, r.left + r.width/2, r.top + r.height/2);
+    });
+    els.resetView.addEventListener("click", resetView);
+
+    // ---- URL helpers ----
+    function manifestUrl(varName){ return `maps/manifest_${varName}.json`; }
+    function frameUrl(file){ return file.startsWith("maps/") ? file : `maps/${file}`; }
+
+    function withCacheKey(url){
+      if (!cacheKey) return url;
+      const sep = url.includes("?") ? "&" : "?";
+      return url + sep + "v=" + encodeURIComponent(cacheKey);
+    }
+
+    async function fetchJson(url){
+      const r = await fetch(withCacheKey(url));
+      if (!r.ok) throw new Error(`Fetch failed ${r.status}`);
+      return await r.json();
+    }
+
+    function setEnabled(enabled){
+      els.slider.disabled = !enabled;
+      els.prevBtn.disabled = !enabled;
+      els.nextBtn.disabled = !enabled;
+    }
+
+    function updateButtons(){
+      const n = manifest?.frames?.length || 0;
+      const i = Number(els.slider.value || 0);
+      els.prevBtn.disabled = !n || i <= 0;
+      els.nextBtn.disabled = !n || i >= n - 1;
+    }
+
+    // ---- Image loading + preload ----
+    function preload(url){
+      if (preloaded.has(url)) return;
+      const im = new Image();
+      im.src = url;
+      preloaded.set(url, im);
+    }
+
+    async function setForecastImage(url){
+      // IMPORTANT: do NOT reset view here (keeps current zoom/pan)
+      setLoading(true);
+      els.img.src = url;
+
+      try{
+        if (els.img.decode) await els.img.decode();
+      }catch(_){}
+
+      setLoading(false);
+      // Re-apply transform after image swap (safety)
+      applyTransform();
+    }
+
+    function frameLabel(idx, total){
+      const n = Math.max(1, Number(total) || 1);
+      return `Day ${idx + 1} of ${n}`;
+    }
+
+    function primePreloadAround(i){
+      const frames = manifest?.frames || [];
+      const next = frames[i + 1]?.file;
+      const prev = frames[i - 1]?.file;
+      if (next) preload(withCacheKey(frameUrl(next)));
+      if (prev) preload(withCacheKey(frameUrl(prev)));
+    }
+
+    async function showFrame(idx){
+      if (!manifest?.frames?.length) return;
+
+      const frames = manifest.frames;
+      const i = clamp(Number(idx), 0, frames.length - 1);
+      els.slider.value = i;
+
+      const fr = frames[i];
+      els.validPill.textContent = `Valid: ${fr.valid_local || fr.valid_utc || "—"}`;
+      els.periodLabel.textContent = frameLabel(i, frames.length);
+
+      const url = withCacheKey(frameUrl(fr.file));
+      await setForecastImage(url);
+
+      updateButtons();
+      primePreloadAround(i);
+    }
+
+    async function loadVariable(varName){
+      selectedVar = varName;
+      setLoading(true);
+      setEnabled(false);
+
+      try{
+        const m = await fetchJson(manifestUrl(varName));
+        manifest = m;
+
+        cacheKey = m.ndfd_last_modified || m.generated_at_utc || "";
+
+        els.title.textContent = m.title || "Forecast Viewer";
+        els.updated.textContent = `Updated: ${m.generated_at_utc || "—"}`;
+
+        const n = Number(m.frame_count || (m.frames?.length || 0));
+        els.slider.min = 0;
+        els.slider.max = Math.max(0, n - 1);
+        els.slider.value = 0;
+
+        (m.frames || []).slice(0, 3).forEach(fr => {
+          if (fr?.file) preload(withCacheKey(frameUrl(fr.file)));
         });
 
-        if (stations.length) setSounding(stations[0]);
-      })
-      .catch(err => {
-        const meta = document.getElementById("soundingMeta");
-        if (meta) meta.textContent = `stations.txt load failed: ${err.message || err}`;
+        setEnabled(true);
+        await showFrame(0);
+      } catch (_e){
+        manifest = null;
+        els.title.textContent = "Forecast Viewer";
+        els.updated.textContent = "Updated: —";
+        els.validPill.textContent = "Valid: —";
+        els.periodLabel.textContent = "Day —";
+        els.slider.min = 0; els.slider.max = 0; els.slider.value = 0;
+        setEnabled(false);
+
+        await setForecastImage(withCacheKey(`maps/latest_${varName}_ndfd.png`));
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    // ---- Variable pill UI ----
+    function renderVarPills(){
+      els.pillRow.innerHTML = "";
+      for (const v of VARS){
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "chip";
+        b.dataset.key = v.key;
+        b.setAttribute("aria-pressed", v.key === selectedVar ? "true" : "false");
+        b.innerHTML = `<span class="dot" aria-hidden="true"></span><span>${v.label}</span>`;
+        b.addEventListener("click", () => {
+          if (selectedVar === v.key) return;
+          setActivePill(v.key);
+          loadVariable(v.key);
+        });
+        els.pillRow.appendChild(b);
+      }
+    }
+
+    function setActivePill(key){
+      [...els.pillRow.querySelectorAll(".chip")].forEach(btn => {
+        btn.setAttribute("aria-pressed", btn.dataset.key === key ? "true" : "false");
       });
-  }
+    }
 
-  activate("basics");
-});
-</script>
+    // ---- Events ----
+    els.slider.addEventListener("input", (e) => showFrame(e.target.value));
+    els.prevBtn.addEventListener("click", () => showFrame(Number(els.slider.value) - 1));
+    els.nextBtn.addEventListener("click", () => showFrame(Number(els.slider.value) + 1));
 
+    // Init
+    renderVarPills();
+    loadVariable(selectedVar);
+    applyTransform();
+  </script>
 </body>
 </html>
