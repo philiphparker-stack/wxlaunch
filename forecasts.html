@@ -17,7 +17,6 @@
 
       --stroke: rgba(255,255,255,.14);
       --stroke2: rgba(255,255,255,.20);
-      --glass: rgba(11,16,32,.70);
       --glass2: rgba(15,23,48,.45);
     }
     *{box-sizing:border-box}
@@ -49,9 +48,10 @@
       font-weight:900;letter-spacing:.3px;
       line-height:1;
     }
-    /* Small logo container (uses your image if present; falls back to gradient) */
+
+    /* Bigger, legit header logo (still not huge) */
     .logo{
-      width:28px;height:28px;border-radius:9px;
+      width:36px;height:36px;border-radius:11px;
       background: linear-gradient(135deg, rgba(106,167,255,.9), rgba(99,255,207,.7));
       box-shadow: 0 8px 24px rgba(0,0,0,.35);
       flex:0 0 auto;
@@ -60,8 +60,8 @@
       place-items:center;
     }
     .logo img{
-      width:22px;
-      height:22px;
+      width:30px;
+      height:30px;
       object-fit:contain;
       display:block;
       filter: drop-shadow(0 6px 10px rgba(0,0,0,.25));
@@ -75,6 +75,7 @@
       font-size:11px;
       letter-spacing:.2px;
     }
+
     nav{
       display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;
       font-weight:700;color:var(--muted);
@@ -92,8 +93,8 @@
       height:100%;
       display:flex;
       flex-direction:column;
-      gap:12px;
-      padding:14px 0;
+      gap:10px;
+      padding:12px 0;
     }
 
     .card{
@@ -108,21 +109,15 @@
       min-height:0;
     }
 
-    /* ===== HEADER (one line on left + updated pill on right) ===== */
     .cardHead{
       display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:12px 14px;
+      padding:10px 14px;
       border-bottom:1px solid var(--line);
       background: rgba(18,26,51,.45);
       flex: 0 0 auto;
       min-width:0;
     }
-    .headLeft{
-      display:flex;
-      align-items:baseline;
-      gap:10px;
-      min-width:0;
-    }
+    .headLeft{min-width:0;}
     .cardHead h1{
       margin:0;
       font-size:16px;
@@ -130,10 +125,8 @@
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width:min(900px, 68vw);
+      max-width:min(980px, 72vw);
     }
-    /* Meta line removed per request */
-    .metaInline{ display:none; }
 
     .pill{
       border:1px solid rgba(255,255,255,.12);
@@ -147,13 +140,13 @@
     }
 
     .viewerArea{
-      padding:10px 14px 14px;
+      padding:10px 14px 12px;
       background: rgba(0,0,0,.06);
       flex: 1 1 auto;
       min-height:0;
       display:flex;
       flex-direction:column;
-      gap:10px;
+      gap:8px; /* tighter so map gets more room */
     }
 
     /* ===== VARIABLES ROW ===== */
@@ -181,7 +174,7 @@
       border:1px solid var(--stroke);
       background: rgba(255,255,255,.06);
       color: var(--text);
-      padding:6px 9px;
+      padding:6px 10px;
       font-weight:950;
       cursor:pointer;
       user-select:none;
@@ -203,12 +196,8 @@
     }
     .chip[aria-pressed="true"] .dot{ background: rgba(99,255,207,.92); }
 
-    /* ===== TIMELINE BAR (below variables, NOT on image) ===== */
+    /* ===== TIMELINE BAR ===== */
     .timelineBar{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      flex-wrap:wrap;
       padding:8px 10px;
       border:1px solid rgba(255,255,255,.12);
       border-radius:14px;
@@ -247,7 +236,7 @@
       flex: 0 0 auto;
     }
     input[type="range"]{
-      width: min(900px, 100%);
+      width: min(920px, 100%);
       accent-color: var(--accent);
       flex: 1 1 auto;
       min-width: 240px;
@@ -264,63 +253,62 @@
       flex: 0 0 auto;
     }
 
-    /* ===== MAP VIEWER ===== */
+    /* ===== MAP VIEWER (THIS is what makes it BIG) ===== */
     #forecastViewer{
-      width: 100%;
-      height: clamp(600px, calc(100vh - 240px), 1100px);
+      width:100%;
+      flex: 1 1 auto;     /* takes ALL remaining space */
+      min-height: 0;      /* required for flex children */
       border-radius: 14px;
       border: 1px solid var(--stroke2);
       background: var(--bg);
-      overflow: hidden;
-      position: relative;
-      flex: 1 1 auto;
-      min-height: 0;
+      overflow:hidden;
+      position:relative;
     }
     #viewerStage{
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
+      position:absolute;
+      inset:0;
+      overflow:hidden;
       background: var(--bg);
-      cursor: grab;
+      cursor:grab;
     }
-    #viewerStage.dragging{ cursor: grabbing; }
+    #viewerStage.dragging{ cursor:grabbing; }
 
     #forecastImg{
-      width: 100%;
-      height: 100%;
-      object-fit: contain; /* keeps zoom baseline correct */
+      width:100%;
+      height:100%;
+      object-fit: contain; /* keep baseline sane for zoom */
       display:block;
       transform-origin: 0 0;
       will-change: transform;
-      user-select: none;
-      -webkit-user-drag: none;
-      pointer-events: none;
+      user-select:none;
+      -webkit-user-drag:none;
+      pointer-events:none;
     }
 
     .viewer-overlay{
-      position: absolute;
-      inset: 0;
+      position:absolute;
+      inset:0;
       display:flex;
       align-items:center;
       justify-content:center;
-      font-weight: 950;
+      font-weight:950;
       color: rgba(255,255,255,0.95);
       background: rgba(0,0,0,0.26);
       backdrop-filter: blur(2px);
       -webkit-backdrop-filter: blur(2px);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.15s ease;
-      z-index: 30;
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .15s ease;
+      z-index:30;
     }
-    .viewer-overlay.show{ opacity: 1; }
+    .viewer-overlay.show{ opacity:1; }
 
-    /* ===== ZOOM CONTROLS ON MAP (top-left) ===== */
+    /* Zoom controls on the map */
     .mapTools{
       position:absolute;
       top:10px;
       left:10px;
-      z-index: 25;
+      z-index:25;
       display:flex;
       align-items:center;
       gap:8px;
@@ -361,10 +349,10 @@
     }
 
     @media (max-width: 860px){
-      #forecastViewer{ height: clamp(600px, calc(100vh - 285px), 1100px); }
       .toolHint{ display:none; }
-      .cardHead h1{ max-width: 70vw; }
       input[type="range"]{ min-width: 200px; }
+      .logo{ width:34px;height:34px;border-radius:10px; }
+      .logo img{ width:28px;height:28px; }
     }
   </style>
 </head>
@@ -375,7 +363,6 @@
       <div class="topbar">
         <div class="brand">
           <div class="logo" aria-hidden="true">
-            <!-- Put your logo file here (recommended path): assets/logo.png -->
             <img id="brandLogo" src="wxlaunch-logo.png" alt="WxLaunch Logo" />
           </div>
           <div>
@@ -404,19 +391,16 @@
         <div class="cardHead">
           <div class="headLeft">
             <h1 id="forecastTitle">Forecast Viewer</h1>
-            <div class="metaInline" id="forecastMeta">NWS/NDFD • —</div>
           </div>
           <div class="pill" id="generatedAtPill">Updated: —</div>
         </div>
 
         <div class="viewerArea">
-          <!-- Variables row -->
           <div class="topControls">
             <span class="label">Variables</span>
             <div class="pillRow" id="pillRow" aria-label="Variable toggles"></div>
           </div>
 
-          <!-- Timeline row (below variables, not on image) -->
           <div class="timelineBar" aria-label="Timeline controls">
             <div class="sliderRow">
               <button class="arrowBtn" id="prevBtn" type="button" aria-label="Previous">
@@ -426,7 +410,6 @@
               </button>
 
               <div class="periodLabel" id="periodLabel">Day —</div>
-
               <input type="range" id="forecastSlider" min="0" max="0" step="1" value="0" />
 
               <button class="arrowBtn" id="nextBtn" type="button" aria-label="Next">
@@ -439,7 +422,6 @@
             </div>
           </div>
 
-          <!-- Map viewer (zoom controls live on the map) -->
           <div id="forecastViewer">
             <div class="viewer-overlay" id="viewerOverlay">Loading…</div>
 
@@ -460,12 +442,6 @@
   </main>
 
   <script>
-    // ----------------------------
-    // Forecast viewer
-    // - Keep zoom/pan state when switching frames/variables
-    // - Reset only when user clicks Reset
-    // ----------------------------
-
     const VARS = [
       { key:"maxt",  label:"Max Temp (°F)" },
       { key:"mint",  label:"Min Temp (°F)" },
@@ -497,17 +473,14 @@
       brandLogo: document.getElementById("brandLogo"),
     };
 
-    // Logo fallback: if assets/logo.png doesn't exist, keep the gradient tile.
-    els.brandLogo.addEventListener("error", () => {
-      els.brandLogo.remove();
-    });
+    // If logo path is wrong, remove it (keeps gradient tile)
+    els.brandLogo.addEventListener("error", () => els.brandLogo.remove());
 
     let selectedVar = "maxt";
     let manifest = null;
     let cacheKey = "";
     const preloaded = new Map();
 
-    // ===== Viewer state =====
     const viewer = {
       scale: 1,
       minScale: 1,
@@ -522,19 +495,12 @@
     };
 
     function clamp(n, lo, hi){ return Math.max(lo, Math.min(hi, n)); }
-
-    function setLoading(on){
-      els.overlay.classList.toggle("show", !!on);
-    }
-
+    function setLoading(on){ els.overlay.classList.toggle("show", !!on); }
     function applyTransform(){
       els.img.style.transform = `translate(${viewer.x}px, ${viewer.y}px) scale(${viewer.scale})`;
     }
-
     function resetView(){
-      viewer.scale = 1;
-      viewer.x = 0;
-      viewer.y = 0;
+      viewer.scale = 1; viewer.x = 0; viewer.y = 0;
       applyTransform();
     }
 
@@ -551,18 +517,15 @@
 
       viewer.x = px - wx * viewer.scale;
       viewer.y = py - wy * viewer.scale;
-
       applyTransform();
     }
 
-    // Wheel zoom
     els.stage.addEventListener("wheel", (e) => {
       e.preventDefault();
       const step = (e.deltaY < 0) ? 0.18 : -0.18;
       zoomAt(viewer.scale + step, e.clientX, e.clientY);
     }, { passive:false });
 
-    // Drag pan
     els.stage.addEventListener("mousedown", (e) => {
       viewer.dragging = true;
       els.stage.classList.add("dragging");
@@ -579,14 +542,11 @@
 
     window.addEventListener("mousemove", (e) => {
       if (!viewer.dragging) return;
-      const dx = e.clientX - viewer.dragStartX;
-      const dy = e.clientY - viewer.dragStartY;
-      viewer.x = viewer.startX + dx;
-      viewer.y = viewer.startY + dy;
+      viewer.x = viewer.startX + (e.clientX - viewer.dragStartX);
+      viewer.y = viewer.startY + (e.clientY - viewer.dragStartY);
       applyTransform();
     });
 
-    // Buttons
     els.zoomIn.addEventListener("click", () => {
       const r = els.stage.getBoundingClientRect();
       zoomAt(viewer.scale + 0.35, r.left + r.width/2, r.top + r.height/2);
@@ -597,10 +557,8 @@
     });
     els.resetView.addEventListener("click", resetView);
 
-    // ---- URL helpers ----
     function manifestUrl(varName){ return `maps/manifest_${varName}.json`; }
     function frameUrl(file){ return file.startsWith("maps/") ? file : `maps/${file}`; }
-
     function withCacheKey(url){
       if (!cacheKey) return url;
       const sep = url.includes("?") ? "&" : "?";
@@ -626,7 +584,6 @@
       els.nextBtn.disabled = !n || i >= n - 1;
     }
 
-    // ---- Image loading + preload ----
     function preload(url){
       if (preloaded.has(url)) return;
       const im = new Image();
@@ -635,16 +592,11 @@
     }
 
     async function setForecastImage(url){
-      // IMPORTANT: do NOT reset view here (keeps current zoom/pan)
+      // keep current zoom/pan
       setLoading(true);
       els.img.src = url;
-
-      try{
-        if (els.img.decode) await els.img.decode();
-      }catch(_){}
-
+      try{ if (els.img.decode) await els.img.decode(); }catch(_){}
       setLoading(false);
-      // Re-apply transform after image swap (safety)
       applyTransform();
     }
 
@@ -672,9 +624,7 @@
       els.validPill.textContent = `Valid: ${fr.valid_local || fr.valid_utc || "—"}`;
       els.periodLabel.textContent = frameLabel(i, frames.length);
 
-      const url = withCacheKey(frameUrl(fr.file));
-      await setForecastImage(url);
-
+      await setForecastImage(withCacheKey(frameUrl(fr.file)));
       updateButtons();
       primePreloadAround(i);
     }
@@ -689,7 +639,6 @@
         manifest = m;
 
         cacheKey = m.ndfd_last_modified || m.generated_at_utc || "";
-
         els.title.textContent = m.title || "Forecast Viewer";
         els.updated.textContent = `Updated: ${m.generated_at_utc || "—"}`;
 
@@ -698,9 +647,7 @@
         els.slider.max = Math.max(0, n - 1);
         els.slider.value = 0;
 
-        (m.frames || []).slice(0, 3).forEach(fr => {
-          if (fr?.file) preload(withCacheKey(frameUrl(fr.file)));
-        });
+        (m.frames || []).slice(0, 3).forEach(fr => fr?.file && preload(withCacheKey(frameUrl(fr.file))));
 
         setEnabled(true);
         await showFrame(0);
@@ -719,7 +666,6 @@
       }
     }
 
-    // ---- Variable pill UI ----
     function renderVarPills(){
       els.pillRow.innerHTML = "";
       for (const v of VARS){
@@ -744,17 +690,13 @@
       });
     }
 
-    // ---- Events ----
     els.slider.addEventListener("input", (e) => showFrame(e.target.value));
     els.prevBtn.addEventListener("click", () => showFrame(Number(els.slider.value) - 1));
     els.nextBtn.addEventListener("click", () => showFrame(Number(els.slider.value) + 1));
 
-    // Init
     renderVarPills();
     loadVariable(selectedVar);
     applyTransform();
   </script>
 </body>
 </html>
-
-
