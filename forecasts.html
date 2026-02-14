@@ -16,6 +16,11 @@
       --line:rgba(255,255,255,.10);
       --accent:#6aa7ff;
       --accent2:#63ffcf;
+
+      --btnbg: rgba(255,255,255,.07);
+      --btnbd: rgba(255,255,255,.14);
+      --btnbgHover: rgba(255,255,255,.10);
+      --btnbdHover: rgba(106,167,255,.35);
     }
     *{box-sizing:border-box}
     body{
@@ -52,9 +57,7 @@
       display:flex;gap:14px;flex-wrap:wrap;justify-content:flex-end;
       font-weight:600;color:var(--muted);
     }
-    nav a{
-      padding:8px 10px;border-radius:10px;
-    }
+    nav a{padding:8px 10px;border-radius:10px}
     nav a.active{
       background: rgba(106,167,255,.14);
       color: var(--text);
@@ -86,7 +89,7 @@
     }
     .cardHead{
       display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:14px 14px 10px;
+      padding:14px 14px 12px;
       border-bottom:1px solid var(--line);
       background: rgba(18,26,51,.45);
     }
@@ -98,28 +101,6 @@
     .sub{
       font-size:13px;color:var(--muted);margin:6px 0 0;
     }
-    .controls{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:12px 14px;
-      border-bottom:1px solid var(--line);
-      background: rgba(15,23,48,.35);
-      flex-wrap:wrap;
-    }
-    .leftControls{
-      display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-    }
-    select, button{
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      padding:8px 10px;
-      font-weight:700;
-      cursor:pointer;
-      outline:none;
-    }
-    select option{background:#0b1020}
-    button:hover{border-color: rgba(106,167,255,.35)}
     .meta{
       display:flex;align-items:center;gap:12px;flex-wrap:wrap;
       color:var(--muted);
@@ -132,18 +113,61 @@
       padding:6px 10px;border-radius:999px;
     }
 
-    .sliderRow{
-      display:flex;align-items:center;gap:12px;
-      width:100%;
+    .controls{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:12px 14px;
+      border-bottom:1px solid var(--line);
+      background: rgba(15,23,48,.35);
+      flex-wrap:wrap;
     }
+    .leftControls{
+      display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    }
+
+    select, button{
+      border-radius:12px;
+      border:1px solid var(--btnbd);
+      background: var(--btnbg);
+      color: var(--text);
+      padding:8px 10px;
+      font-weight:800;
+      cursor:pointer;
+      outline:none;
+    }
+    select option{background:#0b1020}
+    button:hover{border-color: var(--btnbdHover); background: var(--btnbgHover);}
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+
+    .sliderRow{
+      display:flex;align-items:center;gap:10px;
+      width:100%;
+      flex-wrap:wrap;
+    }
+
+    .arrowBtn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:44px;
+      height:36px;
+      padding:0;
+      border-radius:12px;
+      user-select:none;
+    }
+    .arrowBtn svg{width:18px;height:18px;opacity:.95}
+
     input[type="range"]{
       width: min(820px, 100%);
       accent-color: var(--accent);
     }
-    .sliderLabel{
-      font-weight:800;color:var(--text);
-      min-width:92px;
-      text-align:right;
+
+    .periodLabel{
+      font-weight:900;
+      color:var(--text);
+      min-width:150px;
     }
 
     .mapArea{
@@ -151,6 +175,7 @@
       background: rgba(0,0,0,.06);
     }
     .mapWrap{
+      position:relative;
       display:flex;
       justify-content:center;
       align-items:center;
@@ -165,22 +190,34 @@
       height:auto;
       display:block;
     }
-    .status{
-      margin-top:10px;
-      font-size:12px;
-      color:var(--muted);
-      display:flex;
-      justify-content:space-between;
+
+    /* Loading overlay */
+    .loading{
+      position:absolute;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
       gap:10px;
-      flex-wrap:wrap;
-    }
-    .status code{
+      background: rgba(11,16,32,.55);
+      backdrop-filter: blur(2px);
       color: var(--text);
-      background: rgba(255,255,255,.06);
-      padding:3px 8px;
-      border-radius:10px;
-      border:1px solid rgba(255,255,255,.10);
+      font-weight:800;
+      letter-spacing:.2px;
     }
+    .loading.on{display:flex}
+    .dot{
+      width:8px;height:8px;border-radius:50%;
+      background: var(--accent);
+      animation: pulse 1s infinite ease-in-out;
+    }
+    .dot:nth-child(2){animation-delay:.15s}
+    .dot:nth-child(3){animation-delay:.30s}
+    @keyframes pulse{
+      0%,100%{transform:scale(1); opacity:.55}
+      50%{transform:scale(1.6); opacity:1}
+    }
+
     footer{
       padding:26px 0 40px;
       color:var(--muted);
@@ -225,17 +262,18 @@
         <div class="cardHead">
           <div>
             <h1 id="forecastTitle">Forecast Viewer</h1>
-            <div class="sub" id="forecastSubtitle">Slider reads <code>maps/manifest_*.json</code> and swaps frames.</div>
+            <!-- removed “slider reads manifest…” -->
+            <div class="sub" id="forecastSubtitle">NWS/NDFD • Daily frames where available</div>
           </div>
           <div class="meta">
-            <span class="pill" id="frameCountPill">Frames: —</span>
+            <!-- removed Frames pill -->
             <span class="pill" id="generatedAtPill">Updated: —</span>
           </div>
         </div>
 
         <div class="controls">
           <div class="leftControls">
-            <label for="varSelect" style="font-weight:800;color:var(--muted)">Variable</label>
+            <label for="varSelect" style="font-weight:900;color:var(--muted)">Variable</label>
             <select id="varSelect">
               <option value="maxt">Max Temp (°F)</option>
               <option value="mint">Min Temp (°F)</option>
@@ -245,24 +283,36 @@
               <option value="wgust">Wind Gust (mph)</option>
             </select>
 
-            <button id="reloadBtn" type="button">Reload</button>
+            <button id="reloadBtn" type="button" title="Reload this product">Reload</button>
           </div>
 
           <div class="sliderRow">
-            <div class="sliderLabel" id="sliderIdxLabel">#0</div>
+            <button class="arrowBtn" id="prevBtn" type="button" title="Previous period" aria-label="Previous period">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+
+            <div class="periodLabel" id="periodLabel">Period —</div>
+
             <input type="range" id="forecastSlider" min="0" max="0" step="1" value="0" />
+
+            <button class="arrowBtn" id="nextBtn" type="button" title="Next period" aria-label="Next period">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+
             <div class="pill" id="validLocalPill">Valid: —</div>
           </div>
         </div>
 
         <div class="mapArea">
           <div class="mapWrap">
+            <div class="loading" id="loadingOverlay">
+              Loading <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            </div>
             <img id="forecastImage" src="maps/latest_maxt_ndfd.png" alt="Forecast map" />
-          </div>
-
-          <div class="status">
-            <div>Manifest: <code id="manifestPath">maps/manifest_maxt.json</code></div>
-            <div>Image: <code id="imagePath">maps/ndfd_maxt_f000.png</code></div>
           </div>
         </div>
       </section>
@@ -276,116 +326,207 @@
   </footer>
 
   <script>
-  // -----------------------------
-  // Universal manifest-driven slider
-  // -----------------------------
-  const els = {
-    varSelect: document.getElementById("varSelect"),
-    reloadBtn: document.getElementById("reloadBtn"),
-    title: document.getElementById("forecastTitle"),
-    subtitle: document.getElementById("forecastSubtitle"),
-    frameCount: document.getElementById("frameCountPill"),
-    generatedAt: document.getElementById("generatedAtPill"),
-    slider: document.getElementById("forecastSlider"),
-    idxLabel: document.getElementById("sliderIdxLabel"),
-    validPill: document.getElementById("validLocalPill"),
-    img: document.getElementById("forecastImage"),
-    manifestPath: document.getElementById("manifestPath"),
-    imagePath: document.getElementById("imagePath"),
-  };
+    // -----------------------------
+    // Manifest-driven slider (fast switching + preload)
+    // -----------------------------
+    const els = {
+      varSelect: document.getElementById("varSelect"),
+      reloadBtn: document.getElementById("reloadBtn"),
+      title: document.getElementById("forecastTitle"),
+      subtitle: document.getElementById("forecastSubtitle"),
+      generatedAt: document.getElementById("generatedAtPill"),
+      slider: document.getElementById("forecastSlider"),
+      periodLabel: document.getElementById("periodLabel"),
+      validPill: document.getElementById("validLocalPill"),
+      img: document.getElementById("forecastImage"),
+      prevBtn: document.getElementById("prevBtn"),
+      nextBtn: document.getElementById("nextBtn"),
+      loading: document.getElementById("loadingOverlay"),
+    };
 
-  let manifest = null;
+    let manifest = null;
+    let cacheKey = ""; // stable per manifest to allow browser caching between frames
+    const preloaded = new Map(); // url -> Image()
 
-  function cacheBust(url) {
-    const sep = url.includes("?") ? "&" : "?";
-    return url + sep + "t=" + Date.now();
-  }
+    function manifestUrl(varName) {
+      return `maps/manifest_${varName}.json`;
+    }
 
-  function manifestUrl(varName) {
-    return `maps/manifest_${varName}.json`;
-  }
+    function frameUrl(frameFile) {
+     if (!frameFile) return "";
+     if (frameFile.startsWith("http")) return frameFile;
+     if (frameFile.startsWith("maps/")) return frameFile; // prevent maps/maps
+     return `maps/${frameFile}`;
+}
 
-  function frameUrl(frameFile) {
-    // frameFile is usually like "ndfd_maxt_f000.png"
-    return `maps/${frameFile}`;
-  }
 
-  function latestUrl(varName) {
-    return `maps/latest_${varName}_ndfd.png`;
-  }
+    function latestUrl(varName) {
+      return `maps/latest_${varName}_ndfd.png`;
+    }
 
-  function setSliderEnabled(on, max = 0) {
-    els.slider.disabled = !on;
-    els.slider.min = 0;
-    els.slider.max = String(Math.max(0, max));
-    els.slider.value = "0";
-  }
+    function withCacheKey(url) {
+      if (!cacheKey) return url;
+      const sep = url.includes("?") ? "&" : "?";
+      return url + sep + "v=" + encodeURIComponent(cacheKey);
+    }
 
-  function setStatusDefaults() {
-    els.title.textContent = "Forecast Viewer";
-    els.frameCount.textContent = "Frames: —";
-    els.generatedAt.textContent = "Updated: —";
-    els.idxLabel.textContent = "#—";
-    els.validPill.textContent = "Valid: —";
-  }
+    function setLoading(on) {
+      els.loading.classList.toggle("on", !!on);
+    }
 
-  function showFrame(idx) {
-    if (!manifest?.frames?.length) return;
+    function setEnabled(enabled) {
+      els.slider.disabled = !enabled;
+      els.prevBtn.disabled = !enabled;
+      els.nextBtn.disabled = !enabled;
+    }
 
-    const i = Math.max(0, Math.min(Number(idx), manifest.frames.length - 1));
-    const fr = manifest.frames[i];
+    function clamp(n, lo, hi) {
+      return Math.max(lo, Math.min(hi, n));
+    }
 
-    els.idxLabel.textContent = `#${i}`;
-    els.validPill.textContent = `Valid: ${fr.valid_local || fr.valid_utc || "—"}`;
+    function updateButtons() {
+      if (!manifest?.frames?.length) {
+        els.prevBtn.disabled = true;
+        els.nextBtn.disabled = true;
+        return;
+      }
+      const i = Number(els.slider.value);
+      els.prevBtn.disabled = (i <= 0);
+      els.nextBtn.disabled = (i >= manifest.frames.length - 1);
+    }
 
-    const url = frameUrl(fr.file);
-    els.img.src = cacheBust(url);
-    els.imagePath.textContent = url;
-  }
+    function setPeriodLabel(i) {
+      const total = manifest?.frames?.length || 0;
+      if (!total) {
+        els.periodLabel.textContent = "Period —";
+        return;
+      }
+      els.periodLabel.textContent = `Period ${i + 1} of ${total}`;
+    }
 
-  async function loadProduct(varName) {
-    const mUrl = manifestUrl(varName);
-    els.manifestPath.textContent = mUrl;
+    async function showFrame(i) {
+      if (!manifest?.frames?.length) return;
 
-    // reset UI quickly so it feels responsive
-    manifest = null;
-    setStatusDefaults();
-    setSliderEnabled(false, 0);
+      const idx = clamp(Number(i), 0, manifest.frames.length - 1);
+      els.slider.value = String(idx);
+      setPeriodLabel(idx);
 
-    try {
-      const res = await fetch(cacheBust(mUrl));
-      if (!res.ok) throw new Error(`Manifest missing (${res.status})`);
-      const data = await res.json();
+      const fr = manifest.frames[idx];
+      els.validPill.textContent = `Valid: ${fr.valid_local || fr.valid_utc || "—"}`;
 
-      if (!Array.isArray(data.frames) || data.frames.length === 0) {
-        throw new Error("Manifest has no frames");
+      const raw = frameUrl(fr.file);
+      const url = withCacheKey(raw);
+
+      // show loader until the image is decoded (smoother)
+      setLoading(true);
+
+      // If we preloaded it, this becomes instant
+      els.img.src = url;
+
+      try {
+        if (els.img.decode) await els.img.decode();
+      } catch (_) {
+        // decode can fail on some browsers; ignore
+      } finally {
+        setLoading(false);
       }
 
-      manifest = data;
-
-      els.title.textContent = data.title || "Forecast Viewer";
-      els.frameCount.textContent = `Frames: ${data.frame_count ?? data.frames.length}`;
-      els.generatedAt.textContent = `Updated: ${data.generated_at_utc || "—"}`;
-
-      setSliderEnabled(true, data.frames.length - 1);
-      showFrame(0);
-    } catch (err) {
-      // No "coming soon" message — just silently show latest image if manifest fails
-      const fallback = latestUrl(varName);
-      els.img.src = cacheBust(fallback);
-      els.imagePath.textContent = fallback;
-      // slider stays disabled
+      updateButtons();
     }
-  }
 
-  // Events
-  els.slider.addEventListener("input", (e) => showFrame(e.target.value));
-  els.varSelect.addEventListener("change", () => loadProduct(els.varSelect.value));
-  els.reloadBtn.addEventListener("click", () => loadProduct(els.varSelect.value));
+    function preloadFrames() {
+      if (!manifest?.frames?.length) return;
+      for (const fr of manifest.frames) {
+        const raw = frameUrl(fr.file);
+        const url = withCacheKey(raw);
+        if (preloaded.has(url)) continue;
+        const im = new Image();
+        im.decoding = "async";
+        im.loading = "eager";
+        im.src = url;
+        preloaded.set(url, im);
+      }
+    }
 
-  // Initial load
-  loadProduct(els.varSelect.value);
-</script>
+    async function loadProduct(varName) {
+      setLoading(true);
+      setEnabled(false);
 
+      manifest = null;
+      cacheKey = "";
+      els.title.textContent = "Forecast Viewer";
+      els.subtitle.textContent = "NWS/NDFD • Daily frames where available";
+      els.generatedAt.textContent = "Updated: —";
+      els.validPill.textContent = "Valid: —";
+      els.periodLabel.textContent = "Period —";
+
+      // Fetch manifest (cache-busted once per load so it always sees latest)
+      const mUrl = `${manifestUrl(varName)}?t=${Date.now()}`;
+
+      try {
+        const res = await fetch(mUrl, { cache: "no-store" });
+        if (!res.ok) throw new Error(`Manifest fetch failed (${res.status})`);
+        const data = await res.json();
+
+        if (!Array.isArray(data.frames) || data.frames.length === 0) {
+          throw new Error("Manifest has no frames");
+        }
+
+        manifest = data;
+
+        // Use generated time (or frame_count) as the stable cache key
+        // so switching frames does NOT re-download every time.
+        cacheKey = data.generated_at_utc || String(data.frame_count || data.frames.length);
+
+        els.title.textContent = data.title || "Forecast Viewer";
+        els.generatedAt.textContent = `Updated: ${data.generated_at_utc || "—"}`;
+
+        els.slider.min = "0";
+        els.slider.max = String(data.frames.length - 1);
+        els.slider.value = "0";
+
+        setEnabled(true);
+
+        // Preload all frames right away for fast switching
+        preloadFrames();
+
+        await showFrame(0);
+      } catch (e) {
+        // If manifest missing/bad, just show the latest image and disable controls
+        const fallback = latestUrl(varName);
+        els.img.src = `${fallback}?t=${Date.now()}`;
+        setEnabled(false);
+        setLoading(false);
+      }
+    }
+
+    // Controls
+    els.slider.addEventListener("input", (e) => showFrame(e.target.value));
+
+    els.prevBtn.addEventListener("click", () => {
+      if (!manifest?.frames?.length) return;
+      const i = clamp(Number(els.slider.value) - 1, 0, manifest.frames.length - 1);
+      showFrame(i);
+    });
+
+    els.nextBtn.addEventListener("click", () => {
+      if (!manifest?.frames?.length) return;
+      const i = clamp(Number(els.slider.value) + 1, 0, manifest.frames.length - 1);
+      showFrame(i);
+    });
+
+    // Keyboard support (left/right arrows)
+    window.addEventListener("keydown", (e) => {
+      if (!manifest?.frames?.length) return;
+      if (e.key === "ArrowLeft") els.prevBtn.click();
+      if (e.key === "ArrowRight") els.nextBtn.click();
+    });
+
+    els.varSelect.addEventListener("change", () => loadProduct(els.varSelect.value));
+    els.reloadBtn.addEventListener("click", () => loadProduct(els.varSelect.value));
+
+    // Initial load
+    loadProduct(els.varSelect.value);
+  </script>
 </body>
 </html>
