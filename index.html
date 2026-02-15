@@ -25,62 +25,59 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 16px;
-    margin-bottom: 24px;
+    gap: 12px;
+    margin-bottom: 0;
   }
 
-  .logo-wrap {
-    width: 100%;
-    max-width: 380px;
-    margin-bottom: 10px;
-  }
-  .logo-wrap img {
-    width: 100%;
-    height: auto;
-    display: block;
+  .logo-wrap img{
+    height:70px;
+    width:auto;
+    display:block;
   }
 
-  .tabs{
+  /* ===== FORECAST STYLE NAV ===== */
+  .navContainer{
     display:flex;
-    flex-direction: column;
-    gap: 8px;
-    flex-wrap: wrap;
-    justify-content:flex-start;
+    gap:60px;
+    flex-wrap:wrap;
   }
 
-  /* ===== TAB GROUPING (NEW) ===== */
-  .tab-group{
+  .navGroup{
     display:flex;
-    gap:10px;
-    flex-wrap: wrap;
-    justify-content:flex-start;
+    flex-direction:column;
+    gap:8px;
   }
 
-  .tab-divider{
-    width: 100%;
-    margin: 4px 0 -2px;
-    font-size: 11px;
-    font-weight: 900;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.55);
+  .navLabel{
+    font-size:11px;
+    font-weight:900;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:rgba(255,255,255,0.55);
   }
 
-  .tab {
-    border: 1px solid rgba(255,255,255,0.25);
+  .navRow{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+
+  .tab{
+    border:1px solid rgba(255,255,255,.25);
     background: rgba(13, 91, 120, 0.65);
-    color: #ffffff;
-    font-weight: 700;
-    padding: 8px 16px;
-    cursor: pointer;
-    line-height: 1;
-    appearance: none;
-    backdrop-filter: blur(6px);
+    color:#ffffff;
+    font-weight:700;
+    padding:14px 16px;
+    cursor:pointer;
+    line-height:1;
+    appearance:none;
+    backdrop-filter:blur(6px);
+    text-decoration:none;
   }
 
-  .tab.active {
+  .tab.active{
     background: rgba(255,255,255,0.95);
-    color: #0b1f3a;
+    color:#0b1f3a;
     border-color: rgba(255,255,255,0.85);
   }
 
@@ -164,7 +161,7 @@
     box-shadow:
       0 10px 30px rgba(0, 0, 0, 0.35),
       inset 0 1px 0 rgba(255, 255, 255, 0.15);
-    margin-bottom: 22px;
+    margin-bottom: 12px;
   }
 
   /* ===== SOUNDINGS TAB ===== */
@@ -283,30 +280,36 @@
 
 <div class="header-glass">
   <div class="topbar">
+
     <div class="logo-wrap">
       <img src="wxlaunch-logo.png" alt="WXLaunch Logo">
     </div>
 
-    <!-- UPDATED TABS: Analysis section grouping -->
-    <div class="tabs">
+    <div class="navContainer">
 
-      <div class="tab-group">
-        <button class="tab active" type="button" data-target="basics">Basics</button>
-        <button class="tab" type="button" data-target="severe">Severe Weather</button>
-        <button class="tab" type="button" data-target="tropical">Tropical Weather</button>
-        <button class="tab" type="button" data-target="winter">Winter Weather</button>
+      <!-- SNAPSHOTS -->
+      <div class="navGroup">
+        <div class="navLabel">SNAPSHOTS</div>
+        <div class="navRow">
+          <button class="tab active" type="button" data-target="basics">Basics</button>
+          <button class="tab" type="button" data-target="severe">Severe Weather</button>
+          <button class="tab" type="button" data-target="tropical">Tropical Weather</button>
+          <button class="tab" type="button" data-target="winter">Winter Weather</button>
+        </div>
       </div>
 
-      <div class="tab-divider">Analysis &amp; Guidance</div>
-
-      <div class="tab-group">
-        <button class="tab" type="button" data-target="forecasts">Forecasts</button>
-        <button class="tab" type="button" data-target="models">Models</button>
-        <button class="tab" type="button" data-target="soundings">Soundings</button>
-        <button class="tab" type="button" data-target="soundings">Satellite</button>
+      <!-- ANALYSIS & GUIDANCE -->
+      <div class="navGroup">
+        <div class="navLabel">ANALYSIS & GUIDANCE</div>
+        <div class="navRow">
+          <a class="tab" href="forecasts.html">Forecasts</a>
+          <a class="tab" href="models.html">Models</a>
+          <button class="tab" type="button" data-target="soundings">Soundings</button>
+        </div>
       </div>
 
     </div>
+
   </div>
 </div>
 
@@ -469,7 +472,7 @@
   </div>
 </div>
 
-<!-- MODELS -->
+<!-- MODELS (placeholder panel in index; page exists separately too) -->
 <div class="panel" id="models">
   <div class="grid">
     <div class="tile"><div class="tile-header">GFS (CONUS)</div><div class="tile-content"><img src="https://via.placeholder.com/800x450?text=GFS+CONUS" alt="GFS"></div></div>
@@ -532,6 +535,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const panels = document.querySelectorAll(".panel");
 
   function activate(targetId) {
+    if (!targetId) return;
     tabs.forEach(t => t.classList.toggle("active", t.dataset.target === targetId));
     panels.forEach(p => p.classList.toggle("active", p.id === targetId));
 
@@ -540,11 +544,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  tabs.forEach(tab => tab.addEventListener("click", () => activate(tab.dataset.target)));
+  // Bind only internal tabs (those with data-target). Links navigate normally.
+  document.querySelectorAll('.tab[data-target]').forEach(tab => {
+    tab.addEventListener("click", () => activate(tab.dataset.target));
+  });
 
   // Make any tile with an <img> clickable (opens image in new tab)
   document.addEventListener("click", (e) => {
-    if (e.target.closest(".tabs")) return;
+    if (e.target.closest(".header-glass")) return; // don't hijack header clicks
     const tile = e.target.closest(".tile");
     if (!tile) return;
     const explicit = tile.getAttribute("data-href");
