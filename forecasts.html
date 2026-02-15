@@ -19,81 +19,137 @@
       --stroke2: rgba(255,255,255,.20);
       --glass2: rgba(15,23,48,.45);
     }
+
     *{box-sizing:border-box}
+
     body{
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: radial-gradient(1200px 600px at 20% 0%, rgba(106,167,255,.18), transparent 60%),
-                  radial-gradient(1000px 500px at 80% 10%, rgba(99,255,207,.12), transparent 60%),
-                  var(--bg);
-      color:var(--text);
-      overflow:hidden; /* one-screen, no page scroll */
-    }
-    a{color:inherit;text-decoration:none}
-    .wrap{max-width:1200px;margin:0 auto;padding:0 16px}
-
-    header{
-      position:sticky;top:0;z-index:50;
-      border-bottom:1px solid var(--line);
-      background: rgba(11,16,32,.82);
-      backdrop-filter: blur(10px);
-    }
-    .topbar{
-      display:flex;align-items:center;justify-content:space-between;
-      padding:10px 0;
-      gap:12px;
-    }
-    .brand{
-      display:flex;align-items:center;gap:10px;
-      font-weight:900;letter-spacing:.3px;
-      line-height:1;
-    }
-
-    .logo{
-  width:40px;
-  height:40px;
-  border-radius:10px;
-  overflow:hidden;
-  display:grid;
-  place-items:center;
-}
-
-.logo img{
-  width:34px;
-  height:34px;
-  object-fit:contain;
-  display:block;
-}
-
-
-    .brand small{
-      display:block;
-      margin-top:4px;
-      font-weight:700;
-      color:var(--muted);
-      font-size:11px;
-      letter-spacing:.2px;
-    }
-
-    nav{
-      display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;
-      font-weight:700;color:var(--muted);
-    }
-    nav a{padding:7px 9px;border-radius:10px}
-    nav a.active{
-      background: rgba(106,167,255,.14);
+      height:100vh;
+      display:flex;
+      flex-direction:column;
+      padding:16px;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(40, 110, 160, 0.35), transparent 60%),
+        radial-gradient(900px 500px at 80% 30%, rgba(20, 80, 140, 0.25), transparent 55%),
+        linear-gradient(135deg, #050714 0%, #0a1026 45%, #0b1f3a 100%);
       color: var(--text);
-      border:1px solid rgba(106,167,255,.22);
+      overflow:hidden;
     }
-    nav a:hover{color:var(--text)}
 
-    main{ height: calc(100vh - 56px); }
+    a{color:inherit;text-decoration:none}
+
+    .wrap{
+      width:100%;
+      max-width:1200px;
+      margin:0 auto;
+    }
+
+    /* ===== INDEX-STYLE HEADER ===== */
+    .header-glass{
+      padding: 18px 20px;
+      border-radius: 14px;
+      background: linear-gradient(
+        180deg,
+        rgba(20, 90, 150, 0.45),
+        rgba(10, 45, 85, 0.35)
+      );
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      margin-bottom: 12px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+
+    .logo-wrap{
+      width: 100%;
+      max-width: 380px;
+      flex: 0 0 auto;
+    }
+    .logo-wrap img{
+      width:100%;
+      height:auto;
+      display:block;
+    }
+
+    /* One-line tabs: second group to the right */
+    .tabs{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:12px;
+      flex-wrap:wrap;
+      flex: 1 1 auto;
+      min-width: 320px;
+    }
+
+    .tab-group{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-start;
+      align-items:center;
+    }
+
+    .tab-divider-inline{
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      white-space: nowrap;
+      padding: 0 6px;
+    }
+
+    .tab{
+      border: 1px solid rgba(255,255,255,0.25);
+      background: rgba(13, 91, 120, 0.65);
+      color: #ffffff;
+      font-weight: 700;
+      padding: 8px 16px;
+      cursor: pointer;
+      line-height: 1;
+      appearance: none;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display:inline-flex;
+      align-items:center;
+      border-radius: 0; /* matches your index look */
+    }
+
+    .tab:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 10px 18px rgba(0,0,0,0.18);
+      transition: 0.12s ease;
+    }
+
+    .tab.active{
+      background: rgba(255,255,255,0.95);
+      color: #0b1f3a;
+      border-color: rgba(255,255,255,0.85);
+    }
+
+    /* ===== MAIN LAYOUT ===== */
+    main{
+      flex:1 1 auto;
+      min-height:0;
+    }
+
     .panel{
       height:100%;
       display:flex;
       flex-direction:column;
       gap:10px;
-      padding:12px 0;
     }
 
     .card{
@@ -145,10 +201,10 @@
       min-height:0;
       display:flex;
       flex-direction:column;
-      gap:8px; /* tighter so map gets more room */
+      gap:8px;
     }
 
-    /* ===== VARIABLES ROW ===== */
+    /* Variables row */
     .topControls{
       display:flex;
       align-items:center;
@@ -195,7 +251,7 @@
     }
     .chip[aria-pressed="true"] .dot{ background: rgba(99,255,207,.92); }
 
-    /* ===== TIMELINE BAR ===== */
+    /* Timeline bar */
     .timelineBar{
       padding:8px 10px;
       border:1px solid rgba(255,255,255,.12);
@@ -252,11 +308,11 @@
       flex: 0 0 auto;
     }
 
-    /* ===== MAP VIEWER (THIS is what makes it BIG) ===== */
+    /* Map viewer */
     #forecastViewer{
       width:100%;
-      flex: 1 1 auto;     /* takes ALL remaining space */
-      min-height: 0;      /* required for flex children */
+      flex: 1 1 auto;
+      min-height: 0;
       border-radius: 14px;
       border: 1px solid var(--stroke2);
       background: var(--bg);
@@ -275,7 +331,7 @@
     #forecastImg{
       width:100%;
       height:100%;
-      object-fit: contain; /* keep baseline sane for zoom */
+      object-fit: contain;
       display:block;
       transform-origin: 0 0;
       will-change: transform;
@@ -302,7 +358,7 @@
     }
     .viewer-overlay.show{ opacity:1; }
 
-    /* Zoom controls on the map */
+    /* Zoom controls on map */
     .mapTools{
       position:absolute;
       top:10px;
@@ -347,42 +403,45 @@
       margin-left:4px;
     }
 
-    @media (max-width: 860px){
+    @media (max-width: 980px){
+      .logo-wrap{ max-width: 320px; }
+      .tabs{ justify-content:flex-start; }
+      .tab-divider-inline{ width:100%; padding: 0; }
       .toolHint{ display:none; }
       input[type="range"]{ min-width: 200px; }
-      .logo{ width:34px;height:34px;border-radius:10px; }
-      .logo img{ width:28px;height:28px; }
     }
   </style>
 </head>
 
 <body>
-  <header>
-    <div class="wrap">
+  <div class="wrap">
+    <div class="header-glass">
       <div class="topbar">
-        <div class="brand">
-          <div class="logo" aria-hidden="true">
-            <img id="brandLogo" src="wxlaunch-logo.png" alt="WxLaunch Logo" />
-          </div>
-          <div>
-            WxLaunch
-            <small>NWS Forecasting Data</small>
-          </div>
+        <div class="logo-wrap">
+          <img src="wxlaunch-logo.png" alt="WXLaunch Logo">
         </div>
 
-        <nav aria-label="Primary navigation">
-          <a href="index.html">Home</a>
-          <a href="basics.html">Basics</a>
-          <a href="winter.html">Winter</a>
-          <a href="tropical.html">Tropical</a>
-          <a href="severe.html">Severe</a>
-          <a class="active" href="forecasts.html">Forecasts</a>
-          <a href="soundings.html">Soundings</a>
-          <a href="models.html">Models</a>
-        </nav>
+        <!-- Same header style as index, but as page links -->
+        <div class="tabs" aria-label="Primary navigation">
+          <div class="tab-group">
+            <a class="tab" href="basics.html">Basics</a>
+            <a class="tab" href="severe.html">Severe Weather</a>
+            <a class="tab" href="tropical.html">Tropical Weather</a>
+            <a class="tab" href="winter.html">Winter Weather</a>
+          </div>
+
+          <div class="tab-divider-inline">Analysis &amp; Guidance</div>
+
+          <div class="tab-group">
+            <a class="tab active" href="forecasts.html" aria-current="page">Forecasts</a>
+            <a class="tab" href="models.html">Models</a>
+            <a class="tab" href="soundings.html">Soundings</a>
+            <a class="tab" href="satellite.html">Satellite</a>
+          </div>
+        </div>
       </div>
     </div>
-  </header>
+  </div>
 
   <main class="wrap">
     <div class="panel">
@@ -468,12 +527,7 @@
       zoomIn: document.getElementById("zoomInBtn"),
       zoomOut: document.getElementById("zoomOutBtn"),
       resetView: document.getElementById("resetViewBtn"),
-
-      brandLogo: document.getElementById("brandLogo"),
     };
-
-    // If logo path is wrong, remove it (keeps gradient tile)
-    els.brandLogo.addEventListener("error", () => els.brandLogo.remove());
 
     let selectedVar = "maxt";
     let manifest = null;
@@ -591,7 +645,6 @@
     }
 
     async function setForecastImage(url){
-      // keep current zoom/pan
       setLoading(true);
       els.img.src = url;
       try{ if (els.img.decode) await els.img.decode(); }catch(_){}
@@ -699,4 +752,3 @@
   </script>
 </body>
 </html>
-
