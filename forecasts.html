@@ -37,7 +37,7 @@ body{
   margin:0 auto;
 }
 
-/* ================= HEADER (MATCHES INDEX) ================= */
+/* ================= HEADER (SINGLE HORIZONTAL ROW) ================= */
 
 .header-glass{
   padding:18px 20px;
@@ -57,14 +57,14 @@ body{
 
 .topbar{
   display:flex;
-  flex-direction:column;
-  align-items:flex-start;
-  gap:16px;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  flex-wrap:wrap;
 }
 
 .logo-wrap{
-  width:100%;
-  max-width:380px;
+  max-width:300px;
 }
 .logo-wrap img{
   width:100%;
@@ -72,35 +72,11 @@ body{
   display:block;
 }
 
-.tabsRow{
-  width:100%;
+.navRow{
   display:flex;
-  justify-content:space-between;
   align-items:center;
   gap:16px;
   flex-wrap:wrap;
-}
-
-.tab-group{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-.analysisInline{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  flex-wrap:wrap;
-}
-
-.tab-divider-inline{
-  font-size:11px;
-  font-weight:900;
-  letter-spacing:2px;
-  text-transform:uppercase;
-  color:rgba(255,255,255,0.55);
-  white-space:nowrap;
 }
 
 .tab{
@@ -117,6 +93,15 @@ body{
   background: rgba(255,255,255,.95);
   color:#0b1f3a;
   border-color:rgba(255,255,255,.85);
+}
+
+.analysisLabel{
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.55);
+  margin-left:12px;
 }
 
 /* ================= FORECAST PANEL ================= */
@@ -156,7 +141,7 @@ body{
   align-items:center;
   gap:10px;
   flex-wrap:wrap;
-  margin-bottom:10px;
+  margin-bottom:12px;
 }
 
 .label{
@@ -208,12 +193,12 @@ input[type="range"]{
   accent-color: var(--accent);
 }
 
-/* ================= MAP VIEWER (BIG NOW) ================= */
+/* ================= MAP VIEWER ================= */
 
 #forecastViewer{
   width:100%;
-  height:65vh;
-  min-height:550px;
+  height:72vh;
+  min-height:600px;
   border-radius:14px;
   border:1px solid var(--stroke2);
   background: var(--bg);
@@ -277,10 +262,7 @@ input[type="range"]{
   background: rgba(0,0,0,.26);
   opacity:0;
 }
-
-.viewer-overlay.show{
-  opacity:1;
-}
+.viewer-overlay.show{ opacity:1; }
 </style>
 </head>
 
@@ -294,26 +276,20 @@ input[type="range"]{
       <img src="wxlaunch-logo.png" alt="WXLaunch Logo">
     </div>
 
-    <div class="tabsRow">
+    <div class="navRow">
+      <a class="tab" href="index.html">Basics</a>
+      <a class="tab" href="index.html#severe">Severe Weather</a>
+      <a class="tab" href="index.html#tropical">Tropical Weather</a>
+      <a class="tab" href="index.html#winter">Winter Weather</a>
 
-      <div class="tab-group">
-        <a class="tab" href="index.html">Basics</a>
-        <a class="tab" href="index.html#severe">Severe Weather</a>
-        <a class="tab" href="index.html#tropical">Tropical Weather</a>
-        <a class="tab" href="index.html#winter">Winter Weather</a>
-      </div>
+      <span class="analysisLabel">ANALYSIS & GUIDANCE</span>
 
-      <div class="analysisInline">
-        <div class="tab-divider-inline">ANALYSIS & GUIDANCE</div>
-        <div class="tab-group">
-          <a class="tab active" href="forecasts.html">Forecasts</a>
-          <a class="tab" href="models.html">Models</a>
-          <a class="tab" href="soundings.html">Soundings</a>
-          <a class="tab" href="satellite.html">Satellite</a>
-        </div>
-      </div>
-
+      <a class="tab active" href="forecasts.html">Forecasts</a>
+      <a class="tab" href="models.html">Models</a>
+      <a class="tab" href="soundings.html">Soundings</a>
+      <a class="tab" href="satellite.html">Satellite</a>
     </div>
+
   </div>
 </div>
 
@@ -352,9 +328,8 @@ input[type="range"]{
 </section>
 </div>
 
-<!-- YOUR ORIGINAL JS GOES HERE UNCHANGED -->
 <script>
-/* KEEP YOUR EXISTING JS EXACTLY AS YOU HAVE IT */
+/* PUT YOUR ORIGINAL WORKING MANIFEST + PILL JS HERE */
 </script>
 
 </body>
