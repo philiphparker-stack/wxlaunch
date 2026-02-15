@@ -31,9 +31,13 @@ body{
   color:#fff;
 }
 
+.wrap{
+  width:100%;
+  max-width:1400px;
+  margin:0 auto;
+}
 
-
-/* ================= HEADER (SINGLE HORIZONTAL ROW) ================= */
+/* ================= HEADER ================= */
 
 .header-glass{
   padding:18px 20px;
@@ -53,25 +57,39 @@ body{
 
 .topbar{
   display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:24px;
+  flex-direction:column;
+  gap:20px;
+}
+
+.logo-wrap img{
+  height:70px;
+  width:auto;
+  display:block;
+}
+
+.navContainer{
+  display:flex;
+  gap:60px;
   flex-wrap:wrap;
 }
 
-.logo-wrap{
-  max-width:300px;
+.navGroup{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
 }
-.logo-wrap img{
-  width:100%;
-  height:auto;
-  display:block;
+
+.navLabel{
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.55);
 }
 
 .navRow{
   display:flex;
-  align-items:center;
-  gap:16px;
+  gap:12px;
   flex-wrap:wrap;
 }
 
@@ -83,43 +101,34 @@ body{
   padding:8px 16px;
   cursor:pointer;
   backdrop-filter:blur(6px);
+  text-decoration:none;
 }
 
 .tab.active{
-  background: rgba(255,255,255,.95);
+  background:#fff;
   color:#0b1f3a;
-  border-color:rgba(255,255,255,.85);
 }
 
-.analysisLabel{
-  font-size:11px;
-  font-weight:900;
-  letter-spacing:2px;
-  text-transform:uppercase;
-  color:rgba(255,255,255,0.55);
-  margin-left:12px;
-}
-
-/* ================= FORECAST PANEL ================= */
+/* ================= CARD ================= */
 
 .card{
   background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
   border:1px solid var(--line);
   border-radius:18px;
   box-shadow: 0 18px 48px rgba(0,0,0,.35);
-  padding:14px;
+  padding:18px;
 }
 
 .cardHead{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:10px;
+  margin-bottom:16px;
 }
 
 .cardHead h1{
   margin:0;
-  font-size:16px;
+  font-size:18px;
 }
 
 .pill{
@@ -132,22 +141,18 @@ body{
   color:var(--muted);
 }
 
+/* ================= VARIABLES ================= */
+
 .topControls{
   display:flex;
   align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-bottom:12px;
-}
-
-.label{
-  font-weight:950;
-  color:var(--muted);
+  gap:14px;
+  margin-bottom:18px;
 }
 
 .pillRow{
   display:flex;
-  gap:8px;
+  gap:10px;
   flex-wrap:wrap;
 }
 
@@ -156,46 +161,73 @@ body{
   border:1px solid var(--stroke);
   background: rgba(255,255,255,.06);
   color: var(--text);
-  padding:6px 10px;
-  font-weight:950;
+  padding:8px 14px;
+  font-weight:900;
   cursor:pointer;
 }
 
 .chip[aria-pressed="true"]{
-  background: rgba(106,167,255,.18);
-  border-color: rgba(106,167,255,.42);
+  background: rgba(106,167,255,.25);
+  border-color: rgba(106,167,255,.55);
 }
 
 /* ================= TIMELINE ================= */
 
 .timelineBar{
-  padding:10px;
+  padding:16px;
   border:1px solid rgba(255,255,255,.12);
-  border-radius:14px;
+  border-radius:16px;
   background: var(--glass2);
   backdrop-filter: blur(8px);
-  margin-bottom:16px;
+  margin-bottom:18px;
 }
 
 .sliderRow{
   display:flex;
   align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
+  gap:12px;
+}
+
+.sliderWrap{
+  flex:1;
 }
 
 input[type="range"]{
-  flex:1;
+  width:100%;
   accent-color: var(--accent);
 }
 
-/* ================= MAP VIEWER ================= */
+/* BIG POP OUT ARROWS */
+
+.arrowNav{
+  width:46px;
+  height:46px;
+  border-radius:14px;
+  border:1px solid rgba(106,167,255,.6);
+  background: linear-gradient(145deg, rgba(106,167,255,.35), rgba(106,167,255,.15));
+  color:#fff;
+  font-size:22px;
+  font-weight:900;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 0 18px rgba(106,167,255,.35);
+  transition:.15s ease;
+}
+
+.arrowNav:hover{
+  transform:scale(1.08);
+  box-shadow:0 0 28px rgba(106,167,255,.6);
+}
+
+/* ================= VIEWER ================= */
 
 #forecastViewer{
   width:100%;
-  height:72vh;
-  min-height:600px;
-  border-radius:14px;
+  height:75vh;
+  min-height:650px;
+  border-radius:16px;
   border:1px solid var(--stroke2);
   background: var(--bg);
   overflow:hidden;
@@ -221,30 +253,29 @@ input[type="range"]{
 
 .mapTools{
   position:absolute;
-  top:10px;
-  left:10px;
+  top:12px;
+  left:12px;
   display:flex;
-  gap:8px;
-  padding:6px 8px;
-  border-radius:14px;
-  background: rgba(11,16,32,.55);
-  border:1px solid rgba(255,255,255,.14);
-  backdrop-filter: blur(10px);
+  gap:10px;
+  padding:8px 10px;
+  border-radius:16px;
+  background: rgba(11,16,32,.65);
+  border:1px solid rgba(255,255,255,.2);
 }
 
 .toolBtn{
-  width:34px;
-  height:30px;
+  width:38px;
+  height:34px;
   border-radius:12px;
   border:1px solid var(--stroke);
-  background: rgba(255,255,255,.06);
-  color: var(--text);
-  font-weight:950;
+  background: rgba(255,255,255,.08);
+  color:#fff;
+  font-weight:900;
   cursor:pointer;
 }
 
 .toolReset{
-  padding:0 10px;
+  padding:0 14px;
   width:auto;
 }
 
@@ -254,56 +285,67 @@ input[type="range"]{
   display:flex;
   align-items:center;
   justify-content:center;
-  font-weight:950;
+  font-weight:900;
   background: rgba(0,0,0,.26);
   opacity:0;
 }
-.viewer-overlay.show{ opacity:1; }
+.viewer-overlay.show{opacity:1;}
 </style>
 </head>
 
 <body>
 
 <div class="wrap">
+
 <div class="header-glass">
   <div class="topbar">
-
     <div class="logo-wrap">
-      <img src="wxlaunch-logo.png" alt="WXLaunch Logo">
+      <img src="wxlaunch-logo.png">
     </div>
 
-    <div class="navRow">
-      <a class="tab" href="index.html">Basics</a>
-      <a class="tab" href="index.html#severe">Severe Weather</a>
-      <a class="tab" href="index.html#tropical">Tropical Weather</a>
-      <a class="tab" href="index.html#winter">Winter Weather</a>
+    <div class="navContainer">
+      <div class="navGroup">
+        <div class="navLabel">SNAPSHOTS</div>
+        <div class="navRow">
+          <a class="tab" href="index.html">Basics</a>
+          <a class="tab" href="index.html#severe">Severe Weather</a>
+          <a class="tab" href="index.html#tropical">Tropical Weather</a>
+          <a class="tab" href="index.html#winter">Winter Weather</a>
+        </div>
+      </div>
 
-      <span class="analysisLabel">ANALYSIS & GUIDANCE</span>
-
-      <a class="tab active" href="forecasts.html">Forecasts</a>
-      <a class="tab" href="models.html">Models</a>
-      <a class="tab" href="soundings.html">Soundings</a>
-      <a class="tab" href="satellite.html">Satellite</a>
+      <div class="navGroup">
+        <div class="navLabel">ANALYSIS & GUIDANCE</div>
+        <div class="navRow">
+          <a class="tab active" href="forecasts.html">Forecasts</a>
+          <a class="tab" href="models.html">Models</a>
+          <a class="tab" href="soundings.html">Soundings</a>
+          <a class="tab" href="satellite.html">Satellite</a>
+        </div>
+      </div>
     </div>
-
   </div>
 </div>
 
 <section class="card">
+
   <div class="cardHead">
     <h1 id="forecastTitle">Forecast Viewer</h1>
     <div class="pill" id="generatedAtPill">Updated: —</div>
   </div>
 
   <div class="topControls">
-    <span class="label">Variables</span>
+    <strong>Variables</strong>
     <div class="pillRow" id="pillRow"></div>
   </div>
 
   <div class="timelineBar">
     <div class="sliderRow">
-      <div id="periodLabel">Day —</div>
-      <input type="range" id="forecastSlider" min="0" max="0" step="1" value="0">
+      <button class="arrowNav" id="prevBtn">❮</button>
+      <div class="sliderWrap">
+        <input type="range" id="forecastSlider" min="0" max="0" step="1" value="0">
+      </div>
+      <button class="arrowNav" id="nextBtn">❯</button>
       <div class="pill" id="validLocalPill">Valid: —</div>
     </div>
   </div>
@@ -318,16 +360,115 @@ input[type="range"]{
     </div>
 
     <div id="viewerStage">
-      <img id="forecastImg" src="maps/latest_maxt_ndfd.png" />
+      <img id="forecastImg" src="maps/latest_maxt_ndfd.png">
     </div>
   </div>
+
 </section>
 </div>
 
 <script>
-/* PUT YOUR ORIGINAL WORKING MANIFEST + PILL JS HERE */
+const VARS=[
+{key:"maxt",label:"Max Temp (°F)"},
+{key:"mint",label:"Min Temp (°F)"},
+{key:"dew",label:"Dewpoint (°F)"},
+{key:"qpf",label:"QPF (in)"},
+{key:"snow",label:"Snow (in)"},
+{key:"wgust",label:"Wind Gust (mph)"}
+];
+
+const els={
+pillRow:document.getElementById("pillRow"),
+title:document.getElementById("forecastTitle"),
+updated:document.getElementById("generatedAtPill"),
+slider:document.getElementById("forecastSlider"),
+valid:document.getElementById("validLocalPill"),
+img:document.getElementById("forecastImg"),
+stage:document.getElementById("viewerStage"),
+zoomIn:document.getElementById("zoomInBtn"),
+zoomOut:document.getElementById("zoomOutBtn"),
+reset:document.getElementById("resetViewBtn"),
+prev:document.getElementById("prevBtn"),
+next:document.getElementById("nextBtn")
+};
+
+let selectedVar="maxt";
+let manifest=null;
+
+const viewer={scale:1,x:0,y:0,drag:false,sx:0,sy:0};
+
+function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
+function apply(){els.img.style.transform=`translate(${viewer.x}px,${viewer.y}px) scale(${viewer.scale})`;}
+function resetView(){viewer.scale=1;viewer.x=0;viewer.y=0;apply();}
+
+els.stage.onwheel=e=>{
+e.preventDefault();
+viewer.scale=clamp(viewer.scale+(e.deltaY<0?0.2:-0.2),1,5);
+apply();
+};
+
+els.stage.onmousedown=e=>{
+viewer.drag=true;
+viewer.sx=e.clientX-viewer.x;
+viewer.sy=e.clientY-viewer.y;
+};
+window.onmouseup=()=>viewer.drag=false;
+window.onmousemove=e=>{
+if(!viewer.drag)return;
+viewer.x=e.clientX-viewer.sx;
+viewer.y=e.clientY-viewer.sy;
+apply();
+};
+
+els.zoomIn.onclick=()=>{viewer.scale=clamp(viewer.scale+0.3,1,5);apply();};
+els.zoomOut.onclick=()=>{viewer.scale=clamp(viewer.scale-0.3,1,5);apply();};
+els.reset.onclick=resetView;
+
+function renderPills(){
+els.pillRow.innerHTML="";
+VARS.forEach(v=>{
+const b=document.createElement("button");
+b.className="chip";
+b.textContent=v.label;
+b.setAttribute("aria-pressed",v.key===selectedVar);
+b.onclick=()=>{
+selectedVar=v.key;
+renderPills();
+loadVar(v.key);
+};
+els.pillRow.appendChild(b);
+});
+}
+
+async function loadVar(k){
+try{
+const r=await fetch(`maps/manifest_${k}.json?${Date.now()}`);
+manifest=await r.json();
+els.title.textContent=manifest.title||"Forecast Viewer";
+els.updated.textContent="Updated: "+(manifest.generated_at_utc||"—");
+els.slider.max=manifest.frames.length-1;
+showFrame(0);
+}catch{
+els.img.src=`maps/latest_${k}_ndfd.png?${Date.now()}`;
+}
+}
+
+function showFrame(i){
+if(!manifest?.frames?.length)return;
+const f=manifest.frames[i];
+els.slider.value=i;
+els.valid.textContent="Valid: "+(f.valid_local||"—");
+els.img.src=(f.file.startsWith("maps/")?f.file:"maps/"+f.file)+"?"+Date.now();
+}
+
+els.slider.oninput=e=>showFrame(e.target.value);
+els.prev.onclick=()=>{if(els.slider.value>0)showFrame(+els.slider.value-1);};
+els.next.onclick=()=>{if(manifest && els.slider.value<manifest.frames.length-1)showFrame(+els.slider.value+1);};
+
+renderPills();
+loadVar(selectedVar);
+apply();
 </script>
 
 </body>
 </html>
-
