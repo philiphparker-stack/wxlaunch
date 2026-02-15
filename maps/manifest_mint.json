@@ -1,1 +1,18 @@
-{"var": "mint", "title": "Min Temperature (\u00b0F)", "units": "\u00b0F", "generated_at_utc": "2026-02-15T02:15Z", "frame_count": 3, "frames": [{"idx": 0, "valid_utc": "2026-02-15T02:00Z", "valid_local": "Sat Feb 14, 9:00 PM EST", "file": "ndfd_mint_f000.png"}, {"idx": 1, "valid_utc": "2026-02-16T00:00Z", "valid_local": "Sun Feb 15, 7:00 PM EST", "file": "ndfd_mint_f001.png"}, {"idx": 2, "valid_utc": "2026-02-17T00:00Z", "valid_local": "Mon Feb 16, 7:00 PM EST", "file": "ndfd_mint_f002.png"}]}
+{
+  "title": "Min Temperature (Daily Low)",
+  "generated_at_utc": "2026-02-15 04:08 UTC",
+  "frames": [
+    {
+      "file": "ndfd_mint_f000.png",
+      "valid_local": "Day 1"
+    },
+    {
+      "file": "ndfd_mint_f001.png",
+      "valid_local": "Day 2"
+    },
+    {
+      "file": "ndfd_mint_f002.png",
+      "valid_local": "Day 3"
+    }
+  ]
+}

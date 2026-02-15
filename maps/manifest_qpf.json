@@ -1,21 +1,21 @@
 {
-  "title": "Max Temperature (Daily High)",
+  "title": "Daily Total Precipitation (QPF)",
   "generated_at_utc": "2026-02-15 04:08 UTC",
   "frames": [
     {
-      "file": "ndfd_maxt_f000.png",
+      "file": "ndfd_qpf_f000.png",
       "valid_local": "Day 1"
     },
     {
-      "file": "ndfd_maxt_f001.png",
+      "file": "ndfd_qpf_f001.png",
       "valid_local": "Day 2"
     },
     {
-      "file": "ndfd_maxt_f002.png",
+      "file": "ndfd_qpf_f002.png",
       "valid_local": "Day 3"
     },
     {
-      "file": "ndfd_maxt_f003.png",
+      "file": "ndfd_qpf_f003.png",
       "valid_local": "Day 4"
     }
   ]

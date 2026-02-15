@@ -1,1 +1,22 @@
-{"var": "snow", "title": "Daily Total Snow (Liquid-Equivalent)", "units": "in (LE)", "generated_at_utc": "2026-02-15T02:24Z", "frame_count": 1, "frames": [{"idx": 0, "valid_utc": "2026-02-14", "valid_local": "Sat Feb 14 (Daily Total LE)", "file": "ndfd_snow_f000.png"}], "aggregation": {"type": "local_day_total", "tz": "America/New_York", "note": "Snow shown is LIQUID-EQUIVALENT (LES/LE). Accumulation intervals are split across local calendar days by overlap."}, "cap_note": "Color scale capped at 2.00\" LE (values above shown as top color).", "style_note": "PowerNorm gamma=1.6 to reduce low-end drama.", "threshold_note": "Values below 0.01\" LE are treated as 'no measurable snow' and rendered blank."}
+{
+  "title": "Daily Total Snow (Liquid-Equivalent)",
+  "generated_at_utc": "2026-02-15 04:08 UTC",
+  "frames": [
+    {
+      "file": "ndfd_snow_f000.png",
+      "valid_local": "Day 1"
+    },
+    {
+      "file": "ndfd_snow_f001.png",
+      "valid_local": "Day 2"
+    },
+    {
+      "file": "ndfd_snow_f002.png",
+      "valid_local": "Day 3"
+    },
+    {
+      "file": "ndfd_snow_f003.png",
+      "valid_local": "Day 4"
+    }
+  ]
+}

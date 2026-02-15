@@ -1,1 +1,34 @@
-{"var": "dew", "title": "Daytime Max Dewpoint (\u00b0F)", "units": "\u00b0F", "generated_at_utc": "2026-02-15T02:23Z", "frame_count": 7, "frames": [{"idx": 0, "valid_utc": "2026-02-15", "valid_local": "Sun Feb 15 (Daytime Max)", "file": "ndfd_dew_f000.png"}, {"idx": 1, "valid_utc": "2026-02-16", "valid_local": "Mon Feb 16 (Daytime Max)", "file": "ndfd_dew_f001.png"}, {"idx": 2, "valid_utc": "2026-02-17", "valid_local": "Tue Feb 17 (Daytime Max)", "file": "ndfd_dew_f002.png"}, {"idx": 3, "valid_utc": "2026-02-18", "valid_local": "Wed Feb 18 (Daytime Max)", "file": "ndfd_dew_f003.png"}, {"idx": 4, "valid_utc": "2026-02-19", "valid_local": "Thu Feb 19 (Daytime Max)", "file": "ndfd_dew_f004.png"}, {"idx": 5, "valid_utc": "2026-02-20", "valid_local": "Fri Feb 20 (Daytime Max)", "file": "ndfd_dew_f005.png"}, {"idx": 6, "valid_utc": "2026-02-21", "valid_local": "Sat Feb 21 (Daytime Max)", "file": "ndfd_dew_f006.png"}], "daytime_window_local": {"start": "10:00", "end": "19:00", "tz": "America/New_York"}}
+{
+  "title": "Daily Max Dewpoint",
+  "generated_at_utc": "2026-02-15 04:08 UTC",
+  "frames": [
+    {
+      "file": "ndfd_dew_f000.png",
+      "valid_local": "Day 1"
+    },
+    {
+      "file": "ndfd_dew_f001.png",
+      "valid_local": "Day 2"
+    },
+    {
+      "file": "ndfd_dew_f002.png",
+      "valid_local": "Day 3"
+    },
+    {
+      "file": "ndfd_dew_f003.png",
+      "valid_local": "Day 4"
+    },
+    {
+      "file": "ndfd_dew_f004.png",
+      "valid_local": "Day 5"
+    },
+    {
+      "file": "ndfd_dew_f005.png",
+      "valid_local": "Day 6"
+    },
+    {
+      "file": "ndfd_dew_f006.png",
+      "valid_local": "Day 7"
+    }
+  ]
+}

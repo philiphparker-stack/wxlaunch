@@ -1,1 +1,34 @@
-{"var": "wgust", "title": "Daily Max Wind Gust (mph)", "units": "mph", "generated_at_utc": "2026-02-15T02:25Z", "frame_count": 7, "frames": [{"idx": 0, "valid_utc": "2026-02-14", "valid_local": "Sat Feb 14 (Daily Max Gust)", "file": "ndfd_wgust_f000.png"}, {"idx": 1, "valid_utc": "2026-02-15", "valid_local": "Sun Feb 15 (Daily Max Gust)", "file": "ndfd_wgust_f001.png"}, {"idx": 2, "valid_utc": "2026-02-16", "valid_local": "Mon Feb 16 (Daily Max Gust)", "file": "ndfd_wgust_f002.png"}, {"idx": 3, "valid_utc": "2026-02-17", "valid_local": "Tue Feb 17 (Daily Max Gust)", "file": "ndfd_wgust_f003.png"}, {"idx": 4, "valid_utc": "2026-02-18", "valid_local": "Wed Feb 18 (Daily Max Gust)", "file": "ndfd_wgust_f004.png"}, {"idx": 5, "valid_utc": "2026-02-19", "valid_local": "Thu Feb 19 (Daily Max Gust)", "file": "ndfd_wgust_f005.png"}, {"idx": 6, "valid_utc": "2026-02-20", "valid_local": "Fri Feb 20 (Daily Max Gust)", "file": "ndfd_wgust_f006.png"}], "aggregation": {"type": "local_day_max", "tz": "America/New_York", "note": "Daily max computed over all valid times within each local calendar day."}, "scale": {"vmin_mph": 10.0, "vmax_mph": 70.0, "cap_note": "70+ mph shown as one color (capped)."}}
+{
+  "title": "Daily Max Wind Gust",
+  "generated_at_utc": "2026-02-15 04:08 UTC",
+  "frames": [
+    {
+      "file": "ndfd_wgust_f000.png",
+      "valid_local": "Day 1"
+    },
+    {
+      "file": "ndfd_wgust_f001.png",
+      "valid_local": "Day 2"
+    },
+    {
+      "file": "ndfd_wgust_f002.png",
+      "valid_local": "Day 3"
+    },
+    {
+      "file": "ndfd_wgust_f003.png",
+      "valid_local": "Day 4"
+    },
+    {
+      "file": "ndfd_wgust_f004.png",
+      "valid_local": "Day 5"
+    },
+    {
+      "file": "ndfd_wgust_f005.png",
+      "valid_local": "Day 6"
+    },
+    {
+      "file": "ndfd_wgust_f006.png",
+      "valid_local": "Day 7"
+    }
+  ]
+}
