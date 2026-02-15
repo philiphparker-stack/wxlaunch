@@ -42,6 +42,39 @@ jobs:
           python make_snow_7day_ndfd.py
           python make_wgust_7day_ndfd.py
 
+      # --- NEW: Guarantee manifests match what PNG frames exist ---
+      - name: Rebuild manifests from PNG frames (guarantees sliders work)
+        shell: bash -l {0}
+        run: |
+          python - <<'PY'
+          import glob, json, os
+          from datetime import datetime, timezone
+
+          VARS = [
+            ("maxt", "Max Temperature (Daily High)"),
+            ("mint", "Min Temperature (Daily Low)"),
+            ("dew",  "Daily Max Dewpoint"),
+            ("qpf",  "Daily Total Precipitation (QPF)"),
+            ("snow", "Daily Total Snow (Liquid-Equivalent)"),
+            ("wgust","Daily Max Wind Gust"),
+          ]
+
+          def write_manifest(key, title):
+            files = sorted(glob.glob(f"maps/ndfd_{key}_f*.png"))
+            frames = [{"file": os.path.basename(f), "valid_local": f"Day {i+1}"} for i, f in enumerate(files)]
+            obj = {
+              "title": title,
+              "generated_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
+              "frames": frames
+            }
+            with open(f"maps/manifest_{key}.json", "w", encoding="utf-8") as fp:
+              json.dump(obj, fp, indent=2)
+            print(f"manifest_{key}.json -> {len(frames)} frame(s)")
+
+          for key, title in VARS:
+            write_manifest(key, title)
+          PY
+
       - name: Commit updated maps/manifests (if changed)
         shell: bash
         run: |
