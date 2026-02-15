@@ -330,6 +330,27 @@ def main():
         render(d["data"], lats, lons, d["date"], outfile)
         print(f"Wrote {outfile}")
 
+
+    # Build frames list for website slider
+    frames = []
+    for idx, d in enumerate(daily):
+        frames.append({
+            "file": f"ndfd_qpf_f{idx:03d}.png",
+            "valid_local": format_day_label(d["date"])
+        })
+
+    # Write manifest file for website
+    stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    manifest_obj = {
+        "title": TITLE,
+        "generated_at_utc": stamp,
+        "frames": frames
+    }
+
+    with open(MANIFEST, "w", encoding="utf-8") as f:
+        json.dump(manifest_obj, f, indent=2)
+
+
     first = PNG_PATTERN.format(idx=0)
     with open(first, "rb") as src, open(LATEST_OUTFILE, "wb") as dst:
         dst.write(src.read())
