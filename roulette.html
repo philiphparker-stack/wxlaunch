@@ -99,7 +99,15 @@
     background:radial-gradient(circle at 32% 28%,#fff,#cfcfcf 60%,#8a8a8a);
     box-shadow:0 1px 3px rgba(0,0,0,.7);
     transform:translateY(calc(var(--wheel) * -0.435));
-    transition:transform 1.1s ease-in 4.15s;
+  }
+  .ball.drop{animation:balldrop 1.7s cubic-bezier(.22,1,.36,1) 3.9s forwards;}
+  @keyframes balldrop{
+    0%  {transform:translateY(calc(var(--wheel) * -0.435));}
+    46% {transform:translateY(calc(var(--wheel) * -0.293));}
+    64% {transform:translateY(calc(var(--wheel) * -0.352));}
+    80% {transform:translateY(calc(var(--wheel) * -0.302));}
+    91% {transform:translateY(calc(var(--wheel) * -0.327));}
+    100%{transform:translateY(calc(var(--wheel) * -0.315));}
   }
   .hub{
     position:absolute;top:50%;left:50%;width:24%;height:24%;margin:-12% 0 0 -12%;
@@ -150,12 +158,22 @@
     border-radius:12px;padding:12px;min-width:520px;
     box-shadow:inset 0 0 40px rgba(0,0,0,.45),0 14px 30px rgba(0,0,0,.5);
   }
+  .board{position:relative;}
   .grid{
     display:grid;
     grid-template-columns:1.15fr repeat(12,1fr) .95fr;
     grid-template-rows:repeat(3,44px) 38px 38px;
     gap:5px;
   }
+  .overlay{position:absolute;inset:0;pointer-events:none;z-index:3;}
+  .zone{
+    position:absolute;width:22px;height:22px;border-radius:50%;
+    transform:translate(-50%,-50%);pointer-events:auto;cursor:pointer;
+    background:transparent;transition:background .1s,box-shadow .1s;
+  }
+  .zone:hover{background:rgba(217,178,90,.45);box-shadow:0 0 0 2px rgba(217,178,90,.7);}
+  .zone .chip{width:24px;height:24px;}
+  .zone .chip span{width:15px;height:15px;font-size:.52rem;}
   .cell{
     position:relative;border:1px solid rgba(255,255,255,.28);border-radius:5px;
     color:var(--ivory);font-weight:700;font-variant-numeric:tabular-nums;
@@ -226,7 +244,8 @@
   .fine{margin-top:34px;font-size:.7rem;opacity:.4;text-align:center;max-width:520px;line-height:1.5;}
 
   @media (prefers-reduced-motion:reduce){
-    #wheel,.ballOrbit,.ball{transition-duration:.6s;transition-delay:0s;}
+    #wheel,.ballOrbit{transition-duration:.6s;transition-delay:0s;}
+    .ball.drop{animation-duration:.4s;animation-delay:.2s;}
   }
 </style>
 </head>
@@ -256,7 +275,10 @@
     <div class="board-col">
       <div class="felt-scroll">
         <div class="felt">
-          <div class="grid" id="grid"></div>
+          <div class="board" id="board">
+            <div class="grid" id="grid"></div>
+            <div class="overlay" id="overlay"></div>
+          </div>
         </div>
       </div>
 
@@ -275,7 +297,7 @@
           <button class="act clear" id="clearBtn" disabled>Clear Bets</button>
           <button class="act spin" id="spinBtn" disabled>Spin</button>
         </div>
-        <div class="hint">Pick a chip value, click the felt to place bets (stack as many as you like), then Spin. Straight number pays 35:1, columns &amp; dozens 2:1, even-money bets 1:1.</div>
+        <div class="hint">Pick a chip value, then click the felt to place bets — a number for a straight-up, or hover the <em>lines</em> between numbers for splits, streets, corners &amp; six-lines. Stack as many as you like, then Spin.<br>Straight 35:1 &middot; split 17:1 &middot; street 11:1 &middot; corner 8:1 &middot; six-line 5:1 &middot; column/dozen 2:1 &middot; even-money 1:1.</div>
       </div>
     </div>
   </div>
@@ -361,12 +383,13 @@
     return b;
   }
 
+  const num2el = {};
   // zero
-  mkCell("zero","0","n0",{gridRow:"1 / span 3", gridColumn:"1"});
+  num2el[0] = mkCell("zero","0","n0",{gridRow:"1 / span 3", gridColumn:"1"});
   // numbers 1..36
   for(let n=1;n<=36;n++){
     const p = cellPos(n);
-    mkCell("num "+colorOf(n), n, "n"+n, {gridRow:String(p.row), gridColumn:String(p.col+1)});
+    num2el[n] = mkCell("num "+colorOf(n), n, "n"+n, {gridRow:String(p.row), gridColumn:String(p.col+1)});
   }
   // 2 to 1 columns (rightmost)
   mkCell("outside","2 to 1","colTop",{gridRow:"1",gridColumn:"14"});
@@ -383,6 +406,65 @@
   mkCell("outside diamond dBlack",null,"black",{gridRow:"5",gridColumn:"8 / span 2"});
   mkCell("outside","Odd","odd",{gridRow:"5",gridColumn:"10 / span 2"});
   mkCell("outside","19-36","high",{gridRow:"5",gridColumn:"12 / span 2"});
+
+  // ---- Inside-bet zones (splits, streets, corners, six-lines) ----
+  // Placed on the felt lines; each pays 36/count : stake (i.e. straight 36x total,
+  // split 18x, street 12x, corner 9x, six-line 6x — the true payouts).
+  const overlay = document.getElementById("overlay");
+  const board = document.getElementById("board");
+  const zoneSpecs = [];   // {key, nums, anchor, pt}
+  const insideKey = nums => "in:" + nums.slice().sort((a,b)=>a-b).join("-");
+  function addZone(nums, anchor, pt){
+    const key = insideKey(nums);
+    zoneSpecs.push({key, nums, anchor, pt});
+    const z = document.createElement("div");
+    z.className = "zone";
+    z.dataset.bet = key;
+    z.dataset.pt = pt;
+    z.dataset.anchor = anchor;
+    z.title = nums.length + "-number bet: " + nums.slice().sort((a,b)=>a-b).join(", ");
+    overlay.appendChild(z);
+  }
+  for(let k=1;k<=12;k++){
+    const top=3*k, mid=3*k-1, bot=3*k-2;
+    addZone([top,mid], top, "cb");            // vertical split
+    addZone([mid,bot], mid, "cb");            // vertical split
+    addZone([bot,mid,top], bot, "cb");        // street (bottom outer edge)
+  }
+  for(let k=1;k<=11;k++){
+    const top=3*k, mid=3*k-1, bot=3*k-2;
+    const top2=top+3, mid2=mid+3, bot2=bot+3;
+    addZone([top,top2], top, "rc");           // horizontal split
+    addZone([mid,mid2], mid, "rc");           // horizontal split
+    addZone([bot,bot2], bot, "rc");           // horizontal split
+    addZone([top,top2,mid,mid2], top, "rb");  // upper corner
+    addZone([mid,mid2,bot,bot2], mid, "rb");  // lower corner
+    addZone([bot,mid,top,bot2,mid2,top2], bot, "rb"); // six-line
+  }
+
+  function geom(n){
+    const el = num2el[n];
+    return {
+      cx: el.offsetLeft + el.offsetWidth/2,
+      cy: el.offsetTop + el.offsetHeight/2,
+      r:  el.offsetLeft + el.offsetWidth,
+      b:  el.offsetTop + el.offsetHeight
+    };
+  }
+  function positionZones(){
+    overlay.querySelectorAll(".zone").forEach(z=>{
+      const g = geom(+z.dataset.anchor);
+      let x,y;
+      if(z.dataset.pt==="cb"){ x=g.cx; y=g.b; }
+      else if(z.dataset.pt==="rc"){ x=g.r; y=g.cy; }
+      else { x=g.r; y=g.b; }              // "rb"
+      z.style.left = x+"px";
+      z.style.top  = y+"px";
+    });
+  }
+  requestAnimationFrame(positionZones);
+  if(window.ResizeObserver) new ResizeObserver(positionZones).observe(grid);
+  window.addEventListener("resize", positionZones);
 
   // ---- Betting state ----
   let balance = 1000;
@@ -408,7 +490,7 @@
   }
 
   function renderChip(key){
-    const cell = grid.querySelector('[data-bet="'+key+'"]');
+    const cell = board.querySelector('[data-bet="'+CSS.escape(key)+'"]');
     if(!cell) return;
     let chip = cell.querySelector(".chip");
     const amt = bets[key];
@@ -424,10 +506,10 @@
     document.querySelectorAll(".denom").forEach(d=>d.classList.toggle("sel", d===b));
   });
 
-  // place bets
-  grid.addEventListener("click", e=>{
-    const cell = e.target.closest("[data-bet]"); if(!cell || spinning) return;
-    const key = cell.dataset.bet;
+  // place bets (numbers, outside cells, and line zones all carry data-bet)
+  board.addEventListener("click", e=>{
+    const target = e.target.closest("[data-bet]"); if(!target || spinning) return;
+    const key = target.dataset.bet;
     if(balance < chipVal){ flash("Not enough chips for that bet."); return; }
     balance -= chipVal;
     bets[key] = (bets[key]||0) + chipVal;
@@ -449,6 +531,10 @@
   // payout multiplier (total returned incl. stake), 0 = lose
   function payout(key, w){
     if(key[0]==="n") return (+key.slice(1)===w) ? 36 : 0;
+    if(key.startsWith("in:")){
+      const nums = key.slice(3).split("-").map(Number);
+      return nums.includes(w) ? 36/nums.length : 0;   // 18 / 12 / 9 / 6
+    }
     switch(key){
       case "red":   return (w!==0 && RED.has(w)) ? 2 : 0;
       case "black": return (w!==0 && !RED.has(w)) ? 2 : 0;
@@ -486,15 +572,14 @@
     wheelDeg += (targetWheel - ((wheelDeg%360)+360)%360) + 360; // continue forward
     wheelEl.style.transform = "rotate("+wheelDeg+"deg)";
 
-    // ball orbits opposite, ends at top (multiple of 360), then drops in
+    // ball orbits opposite, ends at top (multiple of 360), then bounces into the pocket
     ballDeg -= 360*9;
     ballOrbit.style.transform = "rotate("+ballDeg+"deg)";
-    ballEl.style.transform = "translateY(calc(var(--wheel) * -0.435))"; // reset outer
-    // force reflow then drop
-    void ballEl.offsetWidth;
-    ballEl.style.transform = "translateY(calc(var(--wheel) * -0.315))";
+    ballEl.classList.remove("drop");
+    void ballEl.offsetWidth;                 // restart the drop animation
+    ballEl.classList.add("drop");
 
-    const settle = window.matchMedia("(prefers-reduced-motion:reduce)").matches ? 650 : 5450;
+    const settle = window.matchMedia("(prefers-reduced-motion:reduce)").matches ? 750 : 5650;
     setTimeout(()=>resolve(winner), settle);
   });
 
