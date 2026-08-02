@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weather Roulette 🎡</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    background: radial-gradient(circle at top, #1b2a4a, #0a1120);
+    color: #f4f6fb;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 60px;
+  }
+  h1 { margin: 8px 0 2px; font-size: 2rem; text-align: center; }
+  .sub { margin: 0 0 20px; opacity: 0.7; font-size: 0.95rem; text-align: center; }
+
+  /* Wheel */
+  .wheel-wrap {
+    position: relative;
+    width: 320px;
+    height: 320px;
+    max-width: 85vw;
+    max-height: 85vw;
+    margin-bottom: 24px;
+  }
+  .pointer {
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 16px solid transparent;
+    border-right: 16px solid transparent;
+    border-top: 26px solid #ffd54a;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,.5));
+    z-index: 3;
+  }
+  #wheel {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 8px solid #ffd54a;
+    box-shadow: 0 0 0 6px #10203f, 0 12px 40px rgba(0,0,0,.55);
+    transition: transform 5s cubic-bezier(0.12, 0.75, 0.05, 1);
+  }
+  .hub {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 46px; height: 46px;
+    margin: -23px 0 0 -23px;
+    background: #ffd54a;
+    border-radius: 50%;
+    border: 4px solid #10203f;
+    z-index: 2;
+  }
+
+  /* Bet form */
+  .panel {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px;
+    padding: 20px;
+    width: 360px;
+    max-width: 92vw;
+    backdrop-filter: blur(6px);
+  }
+  label { display: block; font-size: 0.85rem; opacity: 0.8; margin: 12px 0 4px; }
+  select, input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: #10203f;
+    color: #f4f6fb;
+    font-size: 1rem;
+  }
+  button {
+    margin-top: 18px;
+    width: 100%;
+    padding: 13px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #ffd54a, #ffb300);
+    color: #2a1a00;
+    cursor: pointer;
+    transition: transform .08s ease, filter .15s ease;
+  }
+  button:hover { filter: brightness(1.06); }
+  button:active { transform: scale(0.98); }
+  button:disabled { filter: grayscale(0.6); cursor: not-allowed; }
+
+  .result {
+    margin-top: 18px;
+    min-height: 48px;
+    text-align: center;
+    font-size: 1.1rem;
+    line-height: 1.4;
+  }
+  .result .big { font-size: 1.5rem; font-weight: 800; display: block; }
+  .win { color: #7cf59d; }
+  .lose { color: #ff8a8a; }
+  .fine {
+    margin-top: 28px;
+    font-size: 0.72rem;
+    opacity: 0.45;
+    text-align: center;
+    max-width: 360px;
+  }
+</style>
+</head>
+<body>
+  <h1>🎡 Weather Roulette</h1>
+  <p class="sub">Place a totally-not-real bet. Spin the wheel. Blame the meteorologist.</p>
+
+  <div class="wheel-wrap">
+    <div class="pointer"></div>
+    <canvas id="wheel" width="600" height="600"></canvas>
+    <div class="hub"></div>
+  </div>
+
+  <div class="panel">
+    <label for="chips">Your (imaginary) chips</label>
+    <input id="chips" type="number" value="100" min="1" step="10">
+
+    <label for="bet">Bet that tomorrow will be...</label>
+    <select id="bet">
+      <option value="0">☀️ Sunny</option>
+      <option value="1">🌧️ Rainy</option>
+      <option value="2">❄️ Snowy</option>
+      <option value="3">🌪️ Chaos</option>
+      <option value="4">🌫️ Foggy</option>
+      <option value="5">🌈 Rainbow</option>
+      <option value="6">⛅ Meh</option>
+      <option value="7">🔥 Heatwave</option>
+    </select>
+
+    <button id="spin">SPIN THE WHEEL</button>
+    <div class="result" id="result">No risk, no reward. (There is also no reward.)</div>
+  </div>
+
+  <p class="fine">Not financial advice. Not weather advice. Not advice. Chips have no value and neither do our predictions. For entertainment only.</p>
+
+<script>
+  const segments = [
+    { label: "☀️ Sunny",    color: "#ffcc4d" },
+    { label: "🌧️ Rainy",    color: "#4a90d9" },
+    { label: "❄️ Snowy",    color: "#a8d8ff" },
+    { label: "🌪️ Chaos",    color: "#9b59b6" },
+    { label: "🌫️ Foggy",    color: "#95a5a6" },
+    { label: "🌈 Rainbow",  color: "#e056fd" },
+    { label: "⛅ Meh",      color: "#7f8c8d" },
+    { label: "🔥 Heatwave", color: "#e74c3c" },
+  ];
+
+  const canvas = document.getElementById("wheel");
+  const ctx = canvas.getContext("2d");
+  const N = segments.length;
+  const arc = (2 * Math.PI) / N;
+  const R = canvas.width / 2;
+
+  function drawWheel() {
+    for (let i = 0; i < N; i++) {
+      const start = i * arc - Math.PI / 2;
+      ctx.beginPath();
+      ctx.moveTo(R, R);
+      ctx.arc(R, R, R, start, start + arc);
+      ctx.closePath();
+      ctx.fillStyle = segments[i].color;
+      ctx.fill();
+      ctx.strokeStyle = "rgba(0,0,0,0.25)";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // label
+      ctx.save();
+      ctx.translate(R, R);
+      ctx.rotate(start + arc / 2);
+      ctx.textAlign = "right";
+      ctx.fillStyle = "#1a1a1a";
+      ctx.font = "bold 34px system-ui, sans-serif";
+      ctx.fillText(segments[i].label, R - 24, 12);
+      ctx.restore();
+    }
+  }
+  drawWheel();
+
+  const spinBtn = document.getElementById("spin");
+  const resultEl = document.getElementById("result");
+  let currentRotation = 0;
+  let spinning = false;
+
+  spinBtn.addEventListener("click", () => {
+    if (spinning) return;
+    spinning = true;
+    spinBtn.disabled = true;
+    resultEl.className = "result";
+    resultEl.textContent = "Spinning...";
+
+    const betIdx = parseInt(document.getElementById("bet").value, 10);
+    const chips = Math.max(1, parseInt(document.getElementById("chips").value || "0", 10));
+
+    // pick a random winning segment
+    const winner = Math.floor(Math.random() * N);
+    const spins = 5 + Math.floor(Math.random() * 4); // 5-8 full turns
+    // segment center should land under pointer at top
+    const targetAngle = spins * 360 + (360 - (winner * (360 / N) + (360 / N) / 2));
+    currentRotation += targetAngle;
+    canvas.style.transform = `rotate(${currentRotation}deg)`;
+
+    setTimeout(() => {
+      const won = winner === betIdx;
+      if (won) {
+        const payout = chips * (N - 1);
+        resultEl.className = "result win";
+        resultEl.innerHTML = `<span class="big">🎉 ${segments[winner].label}!</span>You called it! You "win" ${payout} imaginary chips. Spend them wisely (you can't).`;
+      } else {
+        resultEl.className = "result lose";
+        resultEl.innerHTML = `<span class="big">${segments[winner].label}</span>The wheel said ${segments[winner].label}, you bet ${segments[betIdx].label}. You lose ${chips} imaginary chips. The house (weather) always wins.`;
+      }
+      spinning = false;
+      spinBtn.disabled = false;
+    }, 5100);
+  });
+</script>
+</body>
+</html>
